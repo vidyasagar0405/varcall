@@ -1,25 +1,28 @@
-import subprocess
 # import threading
 # import glob
 import logging
+import subprocess
+from os import listdir
 # from pathlib import Path
 from webbrowser import open_new_tab
-from os import listdir
+
 from textual import on
 from textual.app import App, ComposeResult
-from textual.containers import ScrollableContainer, Horizontal, Container
-from textual.widgets import Button, Footer, Header, Select, TabbedContent, TabPane, Input, Label
+from textual.containers import Container, Horizontal, ScrollableContainer
+from textual.reactive import reactive
 from textual.screen import ModalScreen
-from modules.logging import setup_logging
+from textual.widgets import (Button, Footer, Header, Input, Label, Select,
+                             TabbedContent, TabPane)
+
+from modules.exec_func import run_download, run_FastQC, run_MultiQC
 from modules.Help import HelpMarkdown
 from modules.Home_widgets import HomeWidgets
-from modules.exec_func import run_download, run_FastQC, run_MultiQC
-from textual.reactive import reactive
+from modules.logging import setup_logging
 
 setup_logging()
 
 class YesOrNo(ModalScreen):
-    def __init__(self, Title: str="Input") -> None:
+    def __init__(self, Title: str = "Input") -> None:
         self.Title = Title
         super().__init__()
 
@@ -30,16 +33,16 @@ class YesOrNo(ModalScreen):
                 yield Button.success("Yes", id="yes")
                 yield Button.error("No", id="no")
 
-
     @on(Button.Pressed)
     def close_modalscreen(self, event: Button.Pressed) -> None:
         self.dismiss(event.button.id == "yes")
+
 
 class Varcall(App[None]):
 
     BINDINGS = [
         ("f1", "show_help", "Help"),
-        ("ctrl+c", "exit_app" , "Exit App"),
+        ("ctrl+c", "exit_app", "Exit App"),
         ("D", "toggle_dark_mode", "Dark/Light mode"),
         ("d", "run_download", "Download"),
         ("f", "run_fastqc", "Run FastQC"),
@@ -50,7 +53,6 @@ class Varcall(App[None]):
     ]
     CSS_PATH = "pyVarcall.css"
 
-
     workingDir = reactive("")
     outputfile_name = reactive("")
     outputdir_name = reactive("")
@@ -59,7 +61,6 @@ class Varcall(App[None]):
     # NOTE: disabled during development for comvenience
     # def on_mount(self) -> None:
     #     self.action_show_help()
-
 
     def compose(self) -> ComposeResult:
         with ScrollableContainer(id="ScrollableContainer"):
@@ -75,29 +76,31 @@ class Varcall(App[None]):
     def update_working_dir(self, event: Input.Submitted) -> None:
         self.workingDir = str(event.input.value)
         self.update_full_output_path()
-        self.notify(f"New Project Started and working directory updated to {self.workingDir}")
+        self.notify(
+            f"New Project Started and working directory updated to {self.workingDir}"
+        )
         makedir = f"mkdir -p {self.workingDir} {self.workingDir}/results {self.workingDir}/data {self.workingDir}/data/reads {self.workingDir}/data/reference {self.workingDir}/results/fastqc {self.workingDir}/results/multiqc {self.workingDir}/results/sam {self.workingDir}/results/bam {self.workingDir}/results/vcf {self.workingDir}/results/bcf"
         self.notify(makedir)
         try:
             result = subprocess.run(
-                    [makedir],
-                    check=True,
-                    stdout=subprocess.PIPE,
-                    stderr=subprocess.PIPE,
-                    text=True,
-                    shell=True
-                )
+                [makedir],
+                check=True,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+                text=True,
+                shell=True,
+            )
         except subprocess.CalledProcessError as e:
             logging.error(f"An error occurred: {e.stderr}")
             self.notify(f"An error occurred: {e.stderr}", severity="error")
 
     @on(Input.Changed, "#Input_outputfile_name")
-    def update_outputfile_name (self, event: Input.Changed) -> None:
+    def update_outputfile_name(self, event: Input.Changed) -> None:
         self.outputfile_name = event.input.value
         self.update_full_output_path()
 
     @on(Select.Changed, "#Select_outputdir")
-    def update_outputdir_name (self, event: Select.Changed) -> None:
+    def update_outputdir_name(self, event: Select.Changed) -> None:
         self.outputdir_name = event.select.value
         self.update_full_output_path()
 
@@ -113,7 +116,6 @@ class Varcall(App[None]):
     def call_run_MultiQC(self) -> None:
         run_MultiQC(self)
 
-
     @on(Button.Pressed, "#view_FastQC_res")
     def view_FastQC_res(self) -> None:
         dir_path = f"{self.workingDir}/results/fastqc/"
@@ -127,7 +129,6 @@ class Varcall(App[None]):
         for file in listdir(dir_path):
             if file.endswith(".html"):
                 open_new_tab(f"{dir_path}/{file}")
-
 
     def action_toggle_dark_mode(self) -> None:
         self.dark = not self.dark
@@ -151,17 +152,24 @@ class Varcall(App[None]):
         self.query_one(TabbedContent).active = "HelpTab"
 
     def action_exit_app(self) -> None:
-        self.push_screen(YesOrNo("Do you want to exit application?"), self.maybe_exit_app)
+        self.push_screen(
+            YesOrNo("Do you want to exit application?"), self.maybe_exit_app
+        )
 
-    def maybe_exit_app (self, bool) -> None:
+    def maybe_exit_app(self, bool) -> None:
         if bool:
             self.exit()
 
     def update_full_output_path(self) -> None:
-        self.full_output_path = f"{self.workingDir}/data/{self.outputdir_name}/{self.outputfile_name}"
+        self.full_output_path = (
+            f"{self.workingDir}/data/{self.outputdir_name}/{self.outputfile_name}"
+        )
 
     def watch_full_output_path(self, full_output_path: str) -> None:
-        self.query_one("#output_path_label", Label).update(f"Saved in: {full_output_path}")
+        self.query_one("#output_path_label", Label).update(
+            f"Saved in: {full_output_path}"
+        )
+
 
 if __name__ == "__main__":
     logging.info("Application started.")
