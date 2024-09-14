@@ -23,7 +23,13 @@ from textual.widgets import (
     TabPane,
 )
 
-from modules.exec_func import run_download, run_FastQC, run_MultiQC
+from modules.exec_func import (
+    run_download,
+    run_FastQC,
+    run_MultiQC,
+    run_bwa_index,
+    run_bwa_mem,
+)
 from modules.Help import HelpMarkdown
 from modules.Home_widgets import HomeWidgets
 from modules.logging import setup_logging
@@ -124,6 +130,14 @@ class Varcall(App[None]):
     @on(Button.Pressed, "#MultiQC_Button")
     def call_run_MultiQC(self) -> None:
         run_MultiQC(self)
+
+    @on(Button.Pressed, "#bwa_index_button")
+    def call_run_bwa_index(self) -> None:
+        run_bwa_index(self)
+
+    @on(Button.Pressed, "#bwa_align_Button")
+    def call_run_bwa_mem(self) -> None:
+        run_bwa_mem(self)
 
     @on(Button.Pressed, "#view_FastQC_res")
     def view_FastQC_res(self) -> None:
