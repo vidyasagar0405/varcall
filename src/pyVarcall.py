@@ -3,6 +3,7 @@
 import logging
 import subprocess
 from os import listdir
+
 # from pathlib import Path
 from webbrowser import open_new_tab
 
@@ -11,8 +12,16 @@ from textual.app import App, ComposeResult
 from textual.containers import Container, Horizontal, ScrollableContainer
 from textual.reactive import reactive
 from textual.screen import ModalScreen
-from textual.widgets import (Button, Footer, Header, Input, Label, Select,
-                             TabbedContent, TabPane)
+from textual.widgets import (
+    Button,
+    Footer,
+    Header,
+    Input,
+    Label,
+    Select,
+    TabbedContent,
+    TabPane,
+)
 
 from modules.exec_func import run_download, run_FastQC, run_MultiQC
 from modules.Help import HelpMarkdown
@@ -20,6 +29,7 @@ from modules.Home_widgets import HomeWidgets
 from modules.logging import setup_logging
 
 setup_logging()
+
 
 class YesOrNo(ModalScreen):
     def __init__(self, Title: str = "Input") -> None:
@@ -39,7 +49,6 @@ class YesOrNo(ModalScreen):
 
 
 class Varcall(App[None]):
-
     BINDINGS = [
         ("f1", "show_help", "Help"),
         ("ctrl+c", "exit_app", "Exit App"),
