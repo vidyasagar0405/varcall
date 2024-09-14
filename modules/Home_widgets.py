@@ -33,7 +33,7 @@ class HomeWidgets(Static):
                     prompt="The downloaded file is for",
                     id="Select_outputdir",
                 )
-                yield Label("Saved in: ", id="output_path_label")
+                yield Label(f"Saved in: ", id="output_path_label")
                 yield Button("Download", id="Download_button", classes="action_buttons")
                 yield LoadingIndicator(id="Download_loading")
         with Container(id="FastQC_widget"):
@@ -84,3 +84,6 @@ class HomeWidgets(Static):
                     id="bwa_description",
                 )
                 yield Button("Index", id="bwa_index_Button", classes="action_buttons")
+                yield Button("Align", id="bwa_align_Button", classes="action_buttons")
+                yield Button("View Results", id="view_bwa_res")
+                yield LoadingIndicator(id="bwa_Loading")
