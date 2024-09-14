@@ -223,7 +223,7 @@ def run_bwa_mem(self):
     logging.info(f"aligning reads using bwa mem {str(read_path)}...")
     self.query_one("#bwa_Horizontal").add_class("running")
     threading.Thread(
-        target=_run_bwa_index,
+        target=_run_bwa_mem,
         args=(
             self,
             ref_path,
