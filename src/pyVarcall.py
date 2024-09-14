@@ -91,7 +91,7 @@ class Varcall(App[None]):
         makedir = f"mkdir -p {self.workingDir} {self.workingDir}/results {self.workingDir}/data {self.workingDir}/data/reads {self.workingDir}/data/reference {self.workingDir}/results/fastqc {self.workingDir}/results/multiqc {self.workingDir}/results/sam {self.workingDir}/results/bam {self.workingDir}/results/vcf {self.workingDir}/results/bcf"
         self.notify(makedir)
         try:
-            result = subprocess.run(
+            subprocess.run(
                 [makedir],
                 check=True,
                 stdout=subprocess.PIPE,
