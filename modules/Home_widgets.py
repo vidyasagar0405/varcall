@@ -33,7 +33,7 @@ class HomeWidgets(Static):
                     prompt="The downloaded file is for",
                     id="Select_outputdir",
                 )
-                yield Label(f"Saved in: ", id="output_path_label")
+                yield Label("Saved in: ", id="output_path_label")
                 yield Button("Download", id="Download_button", classes="action_buttons")
                 yield LoadingIndicator(id="Download_loading")
         with Container(id="FastQC_widget"):
@@ -69,13 +69,13 @@ class HomeWidgets(Static):
         with Container(id="bwa_widget"):
             yield Label("BWA (alignment uses mem)", id="bwa_title")
             yield Input(
-                placeholder="Input reads file name (2 files)",
-                id="bwa_reads_Input",
+                placeholder="Input reference genome file name",
+                id="bwa_ref_Input",
                 suggester=FileSuggester(use_cache=False, case_sensitive=True),
             )
             yield Input(
-                placeholder="Input reference genome file name",
-                id="bwa_ref_Input",
+                placeholder="Input reads file name (2 files)",
+                id="bwa_reads_Input",
                 suggester=FileSuggester(use_cache=False, case_sensitive=True),
             )
             with Horizontal(id="bwa_Horizontal"):

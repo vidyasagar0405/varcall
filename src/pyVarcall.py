@@ -1,17 +1,25 @@
-# import threading
-# import glob
 import logging
 import subprocess
 from os import listdir
-
-# from pathlib import Path
 from webbrowser import open_new_tab
 
+from modules.Bcftools_widgets import BcftoolsWidgets
+from modules.Samtools_widgets import SamtoolsWidgets
+from modules.exec_func import (
+    run_download,
+    run_FastQC,
+    run_MultiQC,
+    run_bwa_index,
+    run_bwa_mem,
+)
+from modules.Help import HelpMarkdown
+from modules.Home_widgets import HomeWidgets
+from modules.logging import setup_logging
+from modules.YesOrNo import YesOrNo
 from textual import on
 from textual.app import App, ComposeResult
-from textual.containers import Container, Horizontal, ScrollableContainer
+from textual.containers import ScrollableContainer
 from textual.reactive import reactive
-from textual.screen import ModalScreen
 from textual.widgets import (
     Button,
     Footer,
@@ -23,35 +31,7 @@ from textual.widgets import (
     TabPane,
 )
 
-from modules.exec_func import (
-    run_download,
-    run_FastQC,
-    run_MultiQC,
-    run_bwa_index,
-    run_bwa_mem,
-)
-from modules.Help import HelpMarkdown
-from modules.Home_widgets import HomeWidgets
-from modules.logging import setup_logging
-
 setup_logging()
-
-
-class YesOrNo(ModalScreen):
-    def __init__(self, Title: str = "Input") -> None:
-        self.Title = Title
-        super().__init__()
-
-    def compose(self) -> ComposeResult:
-        with Container(id="yesorno"):
-            yield Label(self.Title)
-            with Horizontal(id="horizontal_yesorno"):
-                yield Button.success("Yes", id="yes")
-                yield Button.error("No", id="no")
-
-    @on(Button.Pressed)
-    def close_modalscreen(self, event: Button.Pressed) -> None:
-        self.dismiss(event.button.id == "yes")
 
 
 class Varcall(App[None]):
@@ -84,6 +64,10 @@ class Varcall(App[None]):
             with TabbedContent():
                 with TabPane("Home", id="HomeTab"):
                     yield HomeWidgets()
+                with TabPane("Samtools", id="SamtoolsTab"):
+                    yield SamtoolsWidgets()
+                with TabPane("Bcftools", id="BcftoolsTab"):
+                    yield BcftoolsWidgets()
                 with TabPane("Help", id="HelpTab"):
                     yield HelpMarkdown()
 
@@ -131,7 +115,7 @@ class Varcall(App[None]):
     def call_run_MultiQC(self) -> None:
         run_MultiQC(self)
 
-    @on(Button.Pressed, "#bwa_index_button")
+    @on(Button.Pressed, "#bwa_index_Button")
     def call_run_bwa_index(self) -> None:
         run_bwa_index(self)
 
@@ -166,10 +150,10 @@ class Varcall(App[None]):
         self.call_run_MultiQC()
 
     def action_run_alignment(self) -> None:
-        self.call_run_FastQC()
+        self.call_run_bwa_mem()
 
     def action_run_index(self) -> None:
-        self.call_run_FastQC()
+        self.call_run_bwa_index()
 
     def action_show_help(self) -> None:
         self.query_one(TabbedContent).active = "HelpTab"
