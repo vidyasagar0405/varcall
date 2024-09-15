@@ -260,3 +260,47 @@ def _run_bwa_mem(self, ref_path: str, read_path: str) -> None:
             title="bwa mem",
         )
         self.query_one("#bwa_Horizonal").remove_class("running")
+
+
+#
+# def run_Trimmomatic(self):
+#     input_path = self.query_one("#bwa_ref_Input", Input)
+#     input_path = input_path.value.strip()
+#     if not input_path:
+#         input_path = f"{self.workingDir}/data/reference/*"
+#     self.notify(f"bwa indexing {str(input_path)}...", title="bwa index")
+#     logging.info(f"bwa indexing {str(input_path)}...")
+#     self.query_one("#bwa_Horizontal").add_class("running")
+#     threading.Thread(
+#         target=_run_Trimmomatic,
+#         args=(
+#             self,
+#             input_path,
+#         ),
+#     ).start()
+#
+#
+# def _run_Trimmomatic(self, input_path: str) -> None:
+#     try:
+#         Trimmomatic_cmd = (f"trimmomatic SE {input_fastq} {output_fastq} ILLUMINACLIP:TruSeq3-SE.fa:2:30:10 LEADING:3 TRAILING:3 SLIDINGWINDOW:4:15 MINLEN:36")
+#         bwa_index_cmd = f"bwa index {str(input_path)}"
+#         self.notify(bwa_index_cmd, title="bwa Index")
+#         logging.info("Running command: " + bwa_index_cmd)
+#         subprocess.run(
+#             [Trimmomatic_cmd],
+#             check=True,
+#             stdout=subprocess.PIPE,
+#             stderr=subprocess.PIPE,
+#             text=True,
+#             shell=True,
+#         )
+#         logging.info(f"bwa Index completed for {str(input_path)}")
+#         self.notify(f"bwa Index completed for {str(input_path)}", title="bwa Index")
+#         self.query_one("#bwa_Horizonal").remove_class("running")
+#     except subprocess.CalledProcessError as e:
+#         logging.error(f"An error occurred during bwa Index: {e.stderr}")
+#         self.notify(
+#             f"An error occurred during bwa Index: {e.stderr}",
+#             severity="error",
+#             title="bwa Index",
+#         )
