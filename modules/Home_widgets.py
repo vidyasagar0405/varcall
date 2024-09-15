@@ -1,6 +1,7 @@
 from textual.widgets import Label, LoadingIndicator, Button, Input, Select, Static
 from textual.containers import Container, Horizontal
 from modules.exec_func import FileSuggester
+from textual.validation import Number
 
 
 class HomeWidgets(Static):
@@ -68,16 +69,23 @@ class HomeWidgets(Static):
                 yield LoadingIndicator(id="MultiQC_Loading")
         with Container(id="bwa_widget"):
             yield Label("BWA (alignment uses mem)", id="bwa_title")
-            yield Input(
-                placeholder="Input reference genome file name",
-                id="bwa_ref_Input",
-                suggester=FileSuggester(use_cache=False, case_sensitive=True),
-            )
+            with Horizontal(id="bwa_input_horizontal"):
+                yield Input(
+                    placeholder="Input reference genome file name",
+                    id="bwa_ref_Input",
+                    suggester=FileSuggester(use_cache=False, case_sensitive=True),
+                )
+                yield Input(
+                    placeholder="No. of threads (default=4)",
+                    id="bwa_threads_Input",
+                    validators=[Number(minimum=1, maximum=200)],
+                )
             yield Input(
                 placeholder="Input reads file name (2 files)",
                 id="bwa_reads_Input",
                 suggester=FileSuggester(use_cache=False, case_sensitive=True),
             )
+
             with Horizontal(id="bwa_Horizontal"):
                 yield Label(
                     "NOTE: The reference genome must be inedx before mapping\nIndexes all files in workingdir/data/reference directory if the input field is left empty\nMake sure to input two reads (1 sample)",

@@ -213,12 +213,16 @@ def _run_bwa_index(self, input_path: str) -> None:
 def run_bwa_mem(self):
     read_path = self.query_one("#bwa_reads_Input", Input)
     ref_path = self.query_one("#bwa_ref_Input", Input)
+    no_of_threads = self.query_one("#bwa_threads_Input", Input)
     read_path = read_path.value.strip()
     ref_path = ref_path.value.strip()
+    no_of_threads = no_of_threads.value.strip()
     if read_path != 2:
         self.notify("Enter two sample reads file path", title="bwa mem")
     if not ref_path:
         self.notify("Enter reference genome file path", title="bwa mem")
+    if not no_of_threads:
+        no_of_threads = 4
     self.notify(f"aligning reads using bwa mem {str(read_path)}...", title="bwa mem")
     logging.info(f"aligning reads using bwa mem {str(read_path)}...")
     self.query_one("#bwa_Horizontal").add_class("running")
@@ -228,15 +232,14 @@ def run_bwa_mem(self):
             self,
             ref_path,
             read_path,
+            no_of_threads,
         ),
     ).start()
 
 
-def _run_bwa_mem(self, ref_path: str, read_path: str) -> None:
+def _run_bwa_mem(self, ref_path: str, read_path: str, no_of_threads: str) -> None:
     try:
-        bwa_mem_cmd = (
-            f"bwa mem {str(ref_path)} {str(read_path)} -o trial/results/sam/aligned.sam"
-        )
+        bwa_mem_cmd = f"bwa mem -t {str(no_of_threads)} {str(ref_path)} {str(read_path)} -o trial/results/sam/aligned.sam"
         self.notify(bwa_mem_cmd, title="bwa mem")
         logging.info("Running command: " + bwa_mem_cmd)
         subprocess.run(
