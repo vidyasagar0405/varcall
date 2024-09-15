@@ -6,6 +6,35 @@ from textual import on
 
 
 class YesOrNo(ModalScreen):
+    CSS = """
+        YesOrNo{
+            width: auto;
+            height: auto;
+            align: center middle;
+            Container{
+                width: auto;
+                height: auto;
+                padding: 1 2;
+                margin: 2;
+                background: $panel;
+                }
+            Label{
+                width: 100%;
+                height: auto;
+                margin: 1;
+                content-align: center middle;
+                align: center middle;
+                }
+            #horizontal_yesorno{
+                width: auto;
+                height: auto;
+                margin: 1;
+                Button{
+                    margin: 0 1 0 0;
+                    }
+                }
+            }"""
+
     def __init__(self, Title: str = "Input") -> None:
         self.Title = Title
         super().__init__()

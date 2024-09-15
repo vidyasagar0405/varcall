@@ -57,6 +57,9 @@ class Varcall(App[None]):
     # def on_mount(self) -> None:
     #     self.action_show_help()
 
+    # def on_mount(self) -> None:
+    #     self.push_screen(HomeWidgets())
+
     def compose(self) -> ComposeResult:
         with ScrollableContainer(id="ScrollableContainer"):
             yield Header(show_clock=True)

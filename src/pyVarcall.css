@@ -1,155 +1,153 @@
-#--content-tab-HomeTab{color: green;}
-#--content-tab-HelpTab{color: #1691CE;}
+/*  _   _  ___  __  __ _____   _____  _    ____   */
+/* | | | |/ _ \|  \/  | ____| |_   _|/ \  | __ )  */
+/* | |_| | | | | |\/| |  _|     | | / _ \ |  _ \  */
+/* |  _  | |_| | |  | | |___    | |/ ___ \| |_) | */
+/* |_| |_|\___/|_|  |_|_____|   |_/_/   \_\____/  */
 
-YesOrNo{
-    width: auto;
-    height: auto;
-    align: center middle;
-    Container{
-        width: auto;
-	height: auto;
-        padding: 1 2;
-	margin: 2;
-	background: $panel;
-    }
-    Label{
-        width: 100%;
-	height: auto;
-	margin: 1;
-	content-align: center middle;
-	align: center middle;
-    }
-    #horizontal_yesorno{
-        width: auto;
-	height: auto;
-	margin: 1;
-	Button{
-	margin: 0 1 0 0;
-        }
-    }
-}
+#--content-tab-HomeTab{color: green;}
 
 #InputProjectName{
 
-    layout: horizontal;
+  layout: horizontal;
+  height: 3;
+  height: auto;
+
+  #Project_name {
+    width: auto;
+    margin: 1;
+  }
+
+  #Input_Project_name {
     height: 3;
-    height: auto;
+    border: wide $background;
+    min-width: 20;
+    width: auto;
+  }
 
-    #Project_name {
-        width: auto;
-        margin: 1;
-    }
-
-    #Input_Project_name {
-        height: 3;
-        border: wide $background;
-        min-width: 20;
-        width: auto;
-    }
-
-    #Project_location {
-        margin: 1;
-        width: auto;
-        opacity: 60%;
-    }
+  #Project_location {
+    margin: 1;
+    width: auto;
+    opacity: 60%;
+  }
 }
 
 #Download_widget {
-	width: auto;
-	background: $boost;
-	height: 12;
-	.running #Download_loading{display: block;}
-	#download_title {
-		background: $panel-darken-2;
-		width: 100%;
-		margin: 0 0 1 0;
-		padding: 1;
-		height: 3;
-		content-align-vertical: middle;
-	}
-	#Input_url{
-		margin: 0 0 0 1;
-		width: 70%;
-	}
-	#Input_outputfile_name{
-		margin: 0 0 0 0;
-		width: 30%;
-	}
-	#Download_options{
-		margin: 1;
-		Label{
-		margin: 1;
-		height: 3;
-		}
-		Button{
-		margin: 0 1 0 0;
-		}
-	}
-    LoadingIndicator{
-        width: 16;
-        height: 3;
-        /* dock: right; */
-        display: none;
+  width: auto;
+  background: $boost;
+  height: 12;
+  .running #Download_loading{display: block;}
+  #download_title {
+    background: $panel-darken-2;
+    width: 100%;
+    margin: 0 0 1 0;
+    padding: 1;
+    height: 3;
+    content-align-vertical: middle;
+  }
+  #Input_url{
+    margin: 0 0 0 1;
+    width: 70%;
+  }
+  #Input_outputfile_name{
+    margin: 0 0 0 0;
+    width: 30%;
+  }
+  #Download_options{
+    margin: 1;
+    Label{
+      margin: 1;
+      height: 3;
     }
+    Button{
+      margin: 0 1 0 0;
+    }
+  }
+  LoadingIndicator{
+    width: 16;
+    height: 3;
+    /* dock: right; */
+    display: none;
+  }
 }
 
 Container #FastQC_widget, #MultiQC_widget, #bwa_widget{
-	width: auto;
-	background: $boost;
-	height: 12;
-	margin: 1 0 0 0;
-	.running #FastQC_Loading #MultiQC_Loading #bwa_Loading{display: block;}
-	#FastQC_title, #MultiQC_title, #bwa_title{
-		background: $panel-darken-2;
-		width: 100%;
-		margin: 0 0 1 0;
-		padding: 1;
-		height: 3;
-	}
-	Input{
-		margin: 0 0 0 1;
-		width: 99%;
-	}
-	Button{
-	margin: 1;
-	}
-	
-	LoadingIndicator{
-	width: 16;
-	height: 3;
-	dock: right;
-	display: none;
-	margin: 1;
-	}
+  width: auto;
+  background: $boost;
+  height: 12;
+  margin: 1 0 0 0;
+  .running #FastQC_Loading #MultiQC_Loading #bwa_Loading{display: block;}
+  #FastQC_title, #MultiQC_title, #bwa_title{
+    background: $panel-darken-2;
+    width: 100%;
+    margin: 0 0 1 0;
+    padding: 1;
+    height: 3;
+  }
+  Input{
+    margin: 0 0 0 1;
+    width: 99%;
+  }
+  Button{
+    margin: 1;
+  }
+
+  LoadingIndicator{
+    width: 16;
+    height: 3;
+    dock: right;
+    display: none;
+    margin: 1;
+  }
 }
 
 #FastQC_widget{
-    	Label{
-		margin: 1 1 1 2;
-		width: 70%;
-	}
+  Label{
+    margin: 1 1 1 2;
+    width: 70%;
+  }
 }
 
 #MultiQC_widget{
-	Label{
-		margin: 1 1 1 2;
-		width: 70%;
-	}
+  Label{
+    margin: 1 1 1 2;
+    width: 70%;
+  }
 }
 
 #bwa_widget{
-	height: 16;
-    	Input{
-		margin: 0 0 1 1;
-		width: 99%;
-	}
-	Label{
-		margin: 1 1 1 2;
-		width: 60%;
-	}
-    #bwa_read_Input{
-		margin: 0 0 0 1;
-		width: 99%;
-	}
+  height: 16;
+  Input{
+    margin: 0 0 1 1;
+    width: 99%;
+  }
+  Label{
+    margin: 1 1 1 2;
+    width: 60%;
+  }
+  #bwa_read_Input{
+    margin: 0 0 0 1;
+    width: 99%;
+  }
 
 }
+
+/*  ____    _    __  __ _____ ___   ___  _     ____    _____  _    ____   */
+/* / ___|  / \  |  \/  |_   _/ _ \ / _ \| |   / ___|  |_   _|/ \  | __ )  */
+/* \___ \ / _ \ | |\/| | | || | | | | | | |   \___ \    | | / _ \ |  _ \  */
+/*  ___) / ___ \| |  | | | || |_| | |_| | |___ ___) |   | |/ ___ \| |_) | */
+/* |____/_/   \_\_|  |_| |_| \___/ \___/|_____|____/    |_/_/   \_\____/  */
+
+
+/*  ____   ____ _____ _____ ___   ___  _     ____    _____  _    ____   */
+/* | __ ) / ___|  ___|_   _/ _ \ / _ \| |   / ___|  |_   _|/ \  | __ )  */
+/* |  _ \| |   | |_    | || | | | | | | |   \___ \    | | / _ \ |  _ \  */
+/* | |_) | |___|  _|   | || |_| | |_| | |___ ___) |   | |/ ___ \| |_) | */
+/* |____/ \____|_|     |_| \___/ \___/|_____|____/    |_/_/   \_\____/  */
+
+ _   _ _____ _     ____    _____  _    ____  
+/* | | | | ____| |   |  _ \  |_   _|/ \  | __ )  */
+/* | |_| |  _| | |   | |_) |   | | / _ \ |  _ \  */
+/* |  _  | |___| |___|  __/    | |/ ___ \| |_) | */
+/* |_| |_|_____|_____|_|       |_/_/   \_\____/  */
+
+#--content-tab-HelpTab{color: #1691CE;}
