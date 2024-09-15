@@ -147,7 +147,7 @@ Container #FastQC_widget, #MultiQC_widget, #bwa_widget{
 		margin: 1 1 1 2;
 		width: 60%;
 	}
-    #bwa_ref_Input{
+    #bwa_read_Input{
 		margin: 0 0 0 1;
 		width: 99%;
 	}
