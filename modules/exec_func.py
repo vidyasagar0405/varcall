@@ -101,7 +101,7 @@ def _run_FastQC(self, input_path: str) -> None:
         )
         logging.info(f"FastQC completed for {str(input_path)}")
         self.notify(f"FastQC completed for {str(input_path)}", title="FastQC")
-        self.query_one("#FastQC_Horizonal").remove_class("running")
+        self.query_one("#FastQC_Horizontal").remove_class("running")
     except subprocess.CalledProcessError as e:
         logging.error(f"An error occurred during FastQC: {e.stderr}")
         self.notify(
@@ -109,7 +109,7 @@ def _run_FastQC(self, input_path: str) -> None:
             severity="error",
             title="FastQC",
         )
-        self.query_one("#FastQC_Horizonal").remove_class("running")
+        self.query_one("#FastQC_Horizontal").remove_class("running")
 
 
 def run_MultiQC(self):
@@ -145,7 +145,7 @@ def _run_MultiQC(self, input_path: str) -> None:
         )
         logging.info(f"MultiQC completed for {str(input_path)}")
         self.notify(f"MultiQC completed for {str(input_path)}", title="MultiQC")
-        self.query_one("#MultiQC_Horizonal").remove_class("running")
+        self.query_one("#MultiQC_Horizontal").remove_class("running")
     except subprocess.CalledProcessError as e:
         logging.error(f"An error occurred during MultiQC: {e.stderr}")
         self.notify(
@@ -153,7 +153,7 @@ def _run_MultiQC(self, input_path: str) -> None:
             severity="error",
             title="MultiQC",
         )
-        self.query_one("#MultiQC_Horizonal").remove_class("running")
+        self.query_one("#MultiQC_Horizontal").remove_class("running")
 
 
 def run_bwa_index(self):
@@ -188,7 +188,7 @@ def _run_bwa_index(self, input_path: str) -> None:
         )
         logging.info(f"bwa Index completed for {str(input_path)}")
         self.notify(f"bwa Index completed for {str(input_path)}", title="bwa Index")
-        self.query_one("#bwa_Horizonal").remove_class("running")
+        self.query_one("#bwa_Horizontal").remove_class("running")
     except subprocess.CalledProcessError as e:
         logging.error(f"An error occurred during bwa Index: {e.stderr}")
         self.notify(
@@ -196,7 +196,7 @@ def _run_bwa_index(self, input_path: str) -> None:
             severity="error",
             title="bwa Index",
         )
-        self.query_one("#bwa_Horizonal").remove_class("running")
+        self.query_one("#bwa_Horizontal").remove_class("running")
 
 
 def run_bwa_mem(self):
@@ -243,7 +243,7 @@ def _run_bwa_mem(self, ref_path: str, read_path: str, no_of_threads: str) -> Non
         self.notify(
             f"Completed aligning reads using bwa mem {str(read_path)}", title="bwa mem"
         )
-        self.query_one("#bwa_Horizonal").remove_class("running")
+        self.query_one("#bwa_Horizontal").remove_class("running")
     except subprocess.CalledProcessError as e:
         logging.error(f"Error aligning reads using bwa mem: {e.stderr}")
         self.notify(
@@ -251,7 +251,7 @@ def _run_bwa_mem(self, ref_path: str, read_path: str, no_of_threads: str) -> Non
             severity="error",
             title="bwa mem",
         )
-        self.query_one("#bwa_Horizonal").remove_class("running")
+        self.query_one("#bwa_Horizontal").remove_class("running")
 
 
 #
@@ -288,7 +288,7 @@ def _run_bwa_mem(self, ref_path: str, read_path: str, no_of_threads: str) -> Non
 #         )
 #         logging.info(f"bwa Index completed for {str(input_path)}")
 #         self.notify(f"bwa Index completed for {str(input_path)}", title="bwa Index")
-#         self.query_one("#bwa_Horizonal").remove_class("running")
+#         self.query_one("#bwa_Horizontal").remove_class("running")
 #     except subprocess.CalledProcessError as e:
 #         logging.error(f"An error occurred during bwa Index: {e.stderr}")
 #         self.notify(

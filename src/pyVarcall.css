@@ -8,134 +8,136 @@
 
 #InputProjectName{
 
-  layout: horizontal;
-  height: 3;
-  height: auto;
-
-  #Project_name {
-    width: auto;
-    margin: 1;
-  }
-
-  #Input_Project_name {
+    layout: horizontal;
     height: 3;
-    border: wide $background;
-    min-width: 20;
-    width: auto;
-  }
+    height: auto;
 
-  #Project_location {
-    margin: 1;
-    width: auto;
-    opacity: 60%;
-  }
+    #Project_name {
+        width: auto;
+        margin: 1;
+    }
+
+    #Input_Project_name {
+        height: 3;
+        border: wide $background;
+        min-width: 20;
+        width: auto;
+    }
+
+    #Project_location {
+        margin: 1;
+        width: auto;
+        opacity: 60%;
+    }
 }
 
 #Download_widget {
-  width: auto;
-  background: $boost;
-  height: 12;
-  .running #Download_loading{display: block;}
-  #download_title {
-    background: $panel-darken-2;
-    width: 100%;
-    margin: 0 0 1 0;
-    padding: 1;
-    height: 3;
-    content-align-vertical: middle;
-  }
-  #Input_url{
-    margin: 0 0 0 1;
-    width: 70%;
-  }
-  #Input_outputfile_name{
-    margin: 0 0 0 0;
-    width: 30%;
-  }
-  #Download_options{
-    margin: 1;
-    Label{
-      margin: 1;
-      height: 3;
+    width: auto;
+    background: $boost;
+    height: 12;
+    .running #Download_loading{display: block;}
+    #download_title {
+        background: $panel-darken-2;
+        width: 100%;
+        margin: 0 0 1 0;
+        padding: 1;
+        height: 3;
+        content-align-vertical: middle;
     }
-    Button{
-      margin: 0 1 0 0;
+    #Input_url{
+        margin: 0 0 0 1;
+        width: 70%;
     }
-  }
-  LoadingIndicator{
-    width: 16;
-    height: 3;
-    /* dock: right; */
-    display: none;
-  }
+    #Input_outputfile_name{
+        margin: 0 0 0 0;
+        width: 30%;
+    }
+    #Download_options{
+        margin: 1;
+        Label{
+            margin: 1;
+            height: 3;
+        }
+        Button{
+            margin: 0 1 0 0;
+        }
+    }
+    LoadingIndicator{
+        width: 16;
+        height: 3;
+        /* dock: right; */
+        display: none;
+    }
 }
 
 Container #FastQC_widget, #MultiQC_widget, #bwa_widget{
-  width: auto;
-  background: $boost;
-  height: 12;
-  margin: 1 0 0 0;
-  .running #FastQC_Loading #MultiQC_Loading #bwa_Loading{display: block;}
-  #FastQC_title, #MultiQC_title, #bwa_title{
-    background: $panel-darken-2;
-    width: 100%;
-    margin: 0 0 1 0;
-    padding: 1;
-    height: 3;
-  }
-  Input{
-    margin: 0 0 0 1;
-    width: 99%;
-  }
-  Button{
-    margin: 1;
-  }
+    width: auto;
+    background: $boost;
+    height: 12;
+    margin: 1 0 0 0;
+    .running #FastQC_Loading{display: block;}
+    .running #MultiQC_Loading{display: block;}
+    .running #bwa_Loading{display: block;}
+    #FastQC_title, #MultiQC_title, #bwa_title{
+        background: $panel-darken-2;
+        width: 100%;
+        margin: 0 0 1 0;
+        padding: 1;
+        height: 3;
+    }
+    Input{
+        margin: 0 0 0 1;
+        width: 99%;
+    }
+    Button{
+        margin: 1;
+    }
 
-  LoadingIndicator{
-    width: 16;
-    height: 3;
-    dock: right;
-    display: none;
-    margin: 1;
-  }
+    LoadingIndicator{
+        width: 16;
+        height: 3;
+        dock: right;
+        display: none;
+        margin: 1;
+    }
 }
 
 #FastQC_widget{
-  Label{
-    margin: 1 1 1 2;
-    width: 70%;
-  }
+    Label{
+        margin: 1 1 1 2;
+        width: 70%;
+    }
 }
 
 #MultiQC_widget{
-  Label{
-    margin: 1 1 1 2;
-    width: 70%;
-  }
+    Label{
+        margin: 1 1 1 2;
+        width: 70%;
+    }
 }
 
 #bwa_widget{
-  height: 18;
-  Input{
-    /* margin: 0 0 1 1; */
-    width: 99%;
-  }
-  Label{
-    margin: 1 1 1 2;
-    width: 60%;
-  }
-  #bwa_reads_Input{
-    margin: 0 0 0 1;
-    width: 99%;
-  }
-  #bwa_ref_Input{
-    margin: 0 0 0 1;
-    width: 75%;
-  }
-  #bwa_threads_Input{
-    margin: 0 0 0 1;
-    width: 24%;
-  }
+    height: 18;
+    Input{
+        /* margin: 0 0 1 1; */
+        width: 99%;
+    }
+    Label{
+        margin: 1 1 1 2;
+        width: 60%;
+    }
+    #bwa_reads_Input{
+        margin: 0 0 0 1;
+        width: 99%;
+    }
+    #bwa_ref_Input{
+        margin: 0 0 0 1;
+        width: 75%;
+    }
+    #bwa_threads_Input{
+        margin: 0 0 0 1;
+        width: 24%;
+    }
 
 }
 
@@ -152,7 +154,7 @@ Container #FastQC_widget, #MultiQC_widget, #bwa_widget{
 /* | |_) | |___|  _|   | || |_| | |_| | |___ ___) |   | |/ ___ \| |_) | */
 /* |____/ \____|_|     |_| \___/ \___/|_____|____/    |_/_/   \_\____/  */
 
- /* _   _ _____ _     ____    _____  _    ____   */
+/* _   _ _____ _     ____    _____  _    ____   */
 /* | | | | ____| |   |  _ \  |_   _|/ \  | __ )  */
 /* | |_| |  _| | |   | |_) |   | | / _ \ |  _ \  */
 /* |  _  | |___| |___|  __/    | |/ ___ \| |_) | */
