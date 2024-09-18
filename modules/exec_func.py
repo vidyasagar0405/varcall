@@ -64,6 +64,7 @@ def _run_download(self, download_url: str) -> None:
         self.notify(
             f"An error occurred while Downloading: {e.stderr}",
             severity="error",
+            timeout="10",
             title="Download",
         )
         self.query_one("#Download_options").remove_class("running")
@@ -107,6 +108,7 @@ def _run_FastQC(self, input_path: str) -> None:
         self.notify(
             f"An error occurred during FastQc: {e.stderr}",
             severity="error",
+            timeout="10",
             title="FastQC",
         )
         self.query_one("#FastQC_Horizontal").remove_class("running")
@@ -151,6 +153,7 @@ def _run_MultiQC(self, input_path: str) -> None:
         self.notify(
             f"An error occurred during MultiQC: {e.stderr}",
             severity="error",
+            timeout="10",
             title="MultiQC",
         )
         self.query_one("#MultiQC_Horizontal").remove_class("running")
@@ -194,6 +197,7 @@ def _run_bwa_index(self, input_path: str) -> None:
         self.notify(
             f"An error occurred during bwa Index: {e.stderr}",
             severity="error",
+            timeout="10",
             title="bwa Index",
         )
         self.query_one("#bwa_Horizontal").remove_class("running")
@@ -255,6 +259,7 @@ def _run_bwa_mem(self, ref_path: str, read_path: str, no_of_threads: str) -> Non
         self.notify(
             f"Error aligning using bwa mem: {e.stderr}",
             severity="error",
+            timeout="10",
             title="bwa mem",
         )
         self.query_one("#bwa_Horizontal").remove_class("running")
@@ -299,6 +304,6 @@ def _run_bwa_mem(self, ref_path: str, read_path: str, no_of_threads: str) -> Non
 #         logging.error(f"An error occurred during bwa Index: {e.stderr}")
 #         self.notify(
 #             f"An error occurred during bwa Index: {e.stderr}",
-#             severity="error",
+#             severity="error", timeout="10",
 #             title="bwa Index",
 #         )
