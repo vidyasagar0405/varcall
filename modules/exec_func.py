@@ -74,27 +74,16 @@ def run_FastQC(self):
     input_path = input_path.value.strip()
     if not input_path:
         input_path = f"{self.workingDir}/data/reads/*"
-        self.notify(f"FastQC {str(input_path)}...", title="FastQC")
-        logging.info(f"FastQC {str(input_path)}...")
-        self.query_one("#FastQC_Horizontal").add_class("running")
-        threading.Thread(
-            target=_run_FastQC,
-            args=(
-                self,
-                input_path,
-            ),
-        ).start()
-    else:
-        self.notify(f"FastQC {str(input_path)}...", title="FastQC")
-        logging.info(f"FastQC {str(input_path)}...")
-        self.query_one("#FastQC_Horizontal").add_class("running")
-        threading.Thread(
-            target=_run_FastQC,
-            args=(
-                self,
-                input_path,
-            ),
-        ).start()
+    self.notify(f"FastQC {str(input_path)}...", title="FastQC")
+    logging.info(f"FastQC {str(input_path)}...")
+    self.query_one("#FastQC_Horizontal").add_class("running")
+    threading.Thread(
+        target=_run_FastQC,
+        args=(
+            self,
+            input_path,
+        ),
+    ).start()
 
 
 def _run_FastQC(self, input_path: str) -> None:
