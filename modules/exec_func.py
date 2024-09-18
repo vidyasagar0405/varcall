@@ -212,8 +212,11 @@ def run_bwa_mem(self):
         self.notify("Enter reference genome file path", title="bwa mem")
     if not no_of_threads:
         no_of_threads = 4
-    self.notify(f"aligning reads using bwa mem {str(read_path)}...", title="bwa mem")
-    logging.info(f"aligning reads using bwa mem {str(read_path)}...")
+    self.notify(
+        f"aligning reads {str(read_path)} to {str(read_path)} using bwa mem",
+        title="bwa mem",
+    )
+    logging.info(f"aligning reads {str(read_path)} to {str(read_path)} using bwa mem")
     self.query_one("#bwa_Horizontal").add_class("running")
     threading.Thread(
         target=_run_bwa_mem,
@@ -239,15 +242,18 @@ def _run_bwa_mem(self, ref_path: str, read_path: str, no_of_threads: str) -> Non
             text=True,
             shell=True,
         )
-        logging.info(f"Completed aligning reads using bwa mem {str(read_path)}")
+        logging.info(
+            f"Completed aligning reads {str(read_path)} to {str(read_path)} using bwa mem"
+        )
         self.notify(
-            f"Completed aligning reads using bwa mem {str(read_path)}", title="bwa mem"
+            f"Completed aligning reads {str(read_path)} to {str(read_path)} using bwa mem",
+            title="bwa mem",
         )
         self.query_one("#bwa_Horizontal").remove_class("running")
     except subprocess.CalledProcessError as e:
-        logging.error(f"Error aligning reads using bwa mem: {e.stderr}")
+        logging.error(f"Error aligning using bwa mem: {e.stderr}")
         self.notify(
-            f"Error aligning reads using bwa mem: {e.stderr}",
+            f"Error aligning using bwa mem: {e.stderr}",
             severity="error",
             title="bwa mem",
         )
