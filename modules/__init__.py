@@ -11,7 +11,7 @@ __licence__ = "MIT"
 # Local imports.
 from .logging import setup_logging
 from .Home_widgets import HomeWidgets
-from .exec_func import (
+from .exec_func.hometab_funcs import (
     FileSuggester,
     run_FastQC,
     run_MultiQC,

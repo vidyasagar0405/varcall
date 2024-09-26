@@ -1,6 +1,6 @@
 from textual.widgets import Label, LoadingIndicator, Button, Input, Select, Static
 from textual.containers import Container, Horizontal
-from modules.exec_func import FileSuggester
+from modules.exec_func.hometab_funcs import FileSuggester
 from textual.validation import Number
 
 

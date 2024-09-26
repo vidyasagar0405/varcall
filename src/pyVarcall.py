@@ -5,7 +5,7 @@ from webbrowser import open_new_tab
 
 from modules.Bcftools_widgets import BcftoolsWidgets
 from modules.Samtools_widgets import SamtoolsWidgets
-from modules.exec_func import (
+from modules.exec_func.hometab_funcs import (
     run_download,
     run_FastQC,
     run_MultiQC,
