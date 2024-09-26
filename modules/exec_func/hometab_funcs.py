@@ -5,6 +5,7 @@ from pathlib import Path
 from modules.logging import setup_logging
 from textual.widgets import Input
 from textual.suggester import Suggester
+from modules.exec_func.samtools_funcs import flagstat_bam
 
 setup_logging()
 
@@ -341,7 +342,7 @@ def _run_bwa_mem(self, ref_path: str, read_path: str, no_of_threads: str) -> Non
         no_of_threads (str): The number of threads to use for BWA MEM.
     """
     try:
-        bwa_mem_cmd = f"bwa mem -t {str(no_of_threads)} {str(ref_path)} {str(read_path)} -o trial/results/sam/aligned.sam"
+        bwa_mem_cmd = f"bwa mem -t {str(no_of_threads)} {str(ref_path)} {str(read_path)} -o {self.workingDir}/results/sam/aligned.sam"
         self.notify(bwa_mem_cmd, title="bwa mem")
         logging.info("Running command: " + bwa_mem_cmd)
         subprocess.run(
@@ -358,6 +359,21 @@ def _run_bwa_mem(self, ref_path: str, read_path: str, no_of_threads: str) -> Non
         self.notify(
             f"Completed aligning reads {str(read_path)} to {str(read_path)} using bwa mem",
             title="bwa mem",
+        )
+
+        flagstat_bam(
+            f"{self.workingDir}/results/sam/aligned.sam",
+            f"{self.workingDir}/results/sam/aligned.sam.flagstat",
+        )
+
+        MultiQC_cmd = f"multiqc {self.workingDir}/results/sam/aligned.sam.flagstat -o {self.workingDir}/results/multiqc/sam"
+        subprocess.run(
+            [MultiQC_cmd],
+            check=True,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            text=True,
+            shell=True,
         )
         self.query_one("#bwa_Horizontal").remove_class("running")
     except subprocess.CalledProcessError as e:
@@ -413,4 +429,3 @@ def _run_bwa_mem(self, ref_path: str, read_path: str, no_of_threads: str) -> Non
 #             severity="error", timeout=10.0,
 #             title="bwa Index",
 #         )
-

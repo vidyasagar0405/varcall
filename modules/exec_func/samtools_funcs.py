@@ -1,4 +1,5 @@
 import pysam
+from pathlib import Path
 
 
 # 1. samtools view equivalent in pysam
@@ -38,7 +39,7 @@ def index_bam(input_file):
 
 
 # 4. samtools flagstat equivalent in pysam
-def flagstat_bam(input_file):
+def flagstat_bam(input_file, out_file):
     """
     The flagstat_bam function generates a summary of alignment statistics
     for the input BAM file, such as total number of reads, mapped reads,
@@ -47,7 +48,12 @@ def flagstat_bam(input_file):
     the quality of alignments.
     """
     stats = pysam.flagstat(input_file)
-    print(stats)
+    # my_file = Path(f"{self.workingDir}/results/sam/aligned.sam.flagstat")
+    my_file = Path(out_file)
+    my_file.touch(exist_ok=True)
+    outfile = open(my_file, "w")
+    outfile.write(str(stats))
+    outfile.close()
 
 
 # 5. samtools stats equivalent in pysam

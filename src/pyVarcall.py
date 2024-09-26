@@ -3,20 +3,6 @@ import subprocess
 from os import listdir
 from webbrowser import open_new_tab
 
-# Importing custom modules and functions
-from modules.Bcftools_widgets import BcftoolsWidgets
-from modules.Samtools_widgets import SamtoolsWidgets
-from modules.exec_func.hometab_funcs import (
-    run_download,
-    run_FastQC,
-    run_MultiQC,
-    run_bwa_index,
-    run_bwa_mem,
-)
-from modules.Help import HelpMarkdown
-from modules.Home_widgets import HomeWidgets
-from modules.logging import setup_logging
-from modules.YesOrNo import YesOrNo
 from textual import on
 from textual.app import App, ComposeResult
 from textual.containers import ScrollableContainer
@@ -31,6 +17,21 @@ from textual.widgets import (
     TabbedContent,
     TabPane,
 )
+
+# Importing custom modules and functions
+from modules.Bcftools_widgets import BcftoolsWidgets
+from modules.exec_func.hometab_funcs import (
+    run_bwa_index,
+    run_bwa_mem,
+    run_download,
+    run_FastQC,
+    run_MultiQC,
+)
+from modules.Help import HelpMarkdown
+from modules.Home_widgets import HomeWidgets
+from modules.logging import setup_logging
+from modules.Samtools_widgets import SamtoolsWidgets
+from modules.YesOrNo import YesOrNo
 
 # Setup logging configuration
 setup_logging()
@@ -96,7 +97,7 @@ class Varcall(App[None]):
             f"New Project Started and working directory updated to {self.workingDir}"
         )
         # Create necessary directories for the project
-        makedir = f"mkdir -p {self.workingDir} {self.workingDir}/results {self.workingDir}/data {self.workingDir}/data/reads {self.workingDir}/data/reference {self.workingDir}/results/fastqc {self.workingDir}/results/multiqc {self.workingDir}/results/sam {self.workingDir}/results/bam {self.workingDir}/results/vcf {self.workingDir}/results/bcf"
+        makedir = f"mkdir -p {self.workingDir} {self.workingDir}/results {self.workingDir}/data {self.workingDir}/data/reads {self.workingDir}/data/reference {self.workingDir}/results/fastqc {self.workingDir}/results/multiqc {self.workingDir}/results/multiqc/sam {self.workingDir}/results/sam {self.workingDir}/results/bam {self.workingDir}/results/vcf {self.workingDir}/results/bcf"
         self.notify(makedir)
         try:
             subprocess.run(
@@ -221,6 +222,22 @@ class Varcall(App[None]):
         in the workingDir/results/multiqc directory in a new browser tab.
         """
         dir_path = f"{self.workingDir}/results/multiqc/"
+        for file in listdir(dir_path):
+            if file.endswith(".html"):
+                open_new_tab(f"{dir_path}/{file}")
+
+    # NOTE:
+    # below code is correct but flagstat_bam() is not fully implememnted yet
+
+    @on(Button.Pressed, "#view_bwa_res")
+    def view_bwa_res(self) -> None:
+        """
+        This method is triggered when the view bwa results button is pressed.
+        Executes flagstat_bam() and multiqc on the result file and then,
+        Opens the it in a web browser.
+        """
+
+        dir_path = f"{self.workingDir}/results/multiqc/sam/"
         for file in listdir(dir_path):
             if file.endswith(".html"):
                 open_new_tab(f"{dir_path}/{file}")
