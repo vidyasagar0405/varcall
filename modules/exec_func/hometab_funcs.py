@@ -11,6 +11,15 @@ setup_logging()
 
 class FileSuggester(Suggester):
     async def get_suggestion(self, value: str) -> str | None:
+        """
+        Provides file path suggestions based on the input value.
+
+        Args:
+            value (str): The input string for which suggestions are needed.
+
+        Returns:
+            str | None: Suggested file path or None if no suggestion is found.
+        """
         # Handle absolute paths
         if value.startswith("/"):
             return " "
@@ -22,6 +31,15 @@ class FileSuggester(Suggester):
 
 
 def run_download(self):
+    """
+    Initiates the download process for a given URL.
+
+    This function retrieves the URL from the input field, validates it,
+    and starts a new thread to handle the download process.
+
+    Args:
+        self: The instance of the class calling this function.
+    """
     raw_url = self.query_one("#Input_url", Input)
     download_url = raw_url.value.strip()
     if not download_url:
@@ -44,6 +62,16 @@ def run_download(self):
 
 
 def _run_download(self, download_url: str) -> None:
+    """
+    Executes the download command using subprocess.
+
+    This function runs the curl command to download the file from the given URL
+    and saves it to the specified output path.
+
+    Args:
+        self: The instance of the class calling this function.
+        download_url (str): The URL from which to download the file.
+    """
     try:
         download_cmd = f"curl -L {str(download_url)} -o {self.full_output_path}"
         self.notify(download_cmd, title="Download")
@@ -71,6 +99,15 @@ def _run_download(self, download_url: str) -> None:
 
 
 def run_FastQC(self):
+    """
+    Initiates the FastQC process for quality control of sequencing data.
+
+    This function retrieves the input file path from the input field, validates it,
+    and starts a new thread to handle the FastQC process.
+
+    Args:
+        self: The instance of the class calling this function.
+    """
     input_path = self.query_one("#FastQC_Input", Input)
     input_path = input_path.value.strip()
     if not input_path:
@@ -88,6 +125,16 @@ def run_FastQC(self):
 
 
 def _run_FastQC(self, input_path: str) -> None:
+    """
+    Executes the FastQC command using subprocess.
+
+    This function runs the FastQC command to perform quality control on the input file
+    and saves the results to the specified output directory.
+
+    Args:
+        self: The instance of the class calling this function.
+        input_path (str): The path to the input file for FastQC.
+    """
     try:
         FastQC_cmd = f"fastqc {str(input_path)} -o {self.workingDir}/results/fastqc/"
         self.notify(FastQC_cmd, title="FastQC")
@@ -115,6 +162,15 @@ def _run_FastQC(self, input_path: str) -> None:
 
 
 def run_MultiQC(self):
+    """
+    Initiates the MultiQC process for aggregating results from multiple tools.
+
+    This function retrieves the input file path from the input field, validates it,
+    and starts a new thread to handle the MultiQC process.
+
+    Args:
+        self: The instance of the class calling this function.
+    """
     input_path = self.query_one("#MultiQC_Input", Input)
     input_path = input_path.value.strip()
     if not input_path:
@@ -133,6 +189,16 @@ def run_MultiQC(self):
 
 
 def _run_MultiQC(self, input_path: str) -> None:
+    """
+    Executes the MultiQC command using subprocess.
+
+    This function runs the MultiQC command to aggregate results from multiple tools
+    and saves the results to the specified output directory.
+
+    Args:
+        self: The instance of the class calling this function.
+        input_path (str): The path to the input directory for MultiQC.
+    """
     try:
         MultiQC_cmd = f"multiqc {str(input_path)} -o {self.workingDir}/results/multiqc/"
         self.notify(MultiQC_cmd, title="MultiQC")
@@ -160,6 +226,15 @@ def _run_MultiQC(self, input_path: str) -> None:
 
 
 def run_bwa_index(self):
+    """
+    Initiates the BWA indexing process for the reference genome.
+
+    This function retrieves the input file path from the input field, validates it,
+    and starts a new thread to handle the BWA indexing process.
+
+    Args:
+        self: The instance of the class calling this function.
+    """
     input_path = self.query_one("#bwa_ref_Input", Input)
     input_path = input_path.value.strip()
     if not input_path:
@@ -177,6 +252,16 @@ def run_bwa_index(self):
 
 
 def _run_bwa_index(self, input_path: str) -> None:
+    """
+    Executes the BWA index command using subprocess.
+
+    This function runs the BWA index command to index the reference genome
+    and saves the results to the specified output directory.
+
+    Args:
+        self: The instance of the class calling this function.
+        input_path (str): The path to the reference genome file for BWA indexing.
+    """
     try:
         bwa_index_cmd = f"bwa index {str(input_path)}"
         self.notify(bwa_index_cmd, title="bwa Index")
@@ -204,6 +289,15 @@ def _run_bwa_index(self, input_path: str) -> None:
 
 
 def run_bwa_mem(self):
+    """
+    Initiates the BWA MEM process for aligning reads to the reference genome.
+
+    This function retrieves the input file paths and number of threads from the input fields,
+    validates them, and starts a new thread to handle the BWA MEM process.
+
+    Args:
+        self: The instance of the class calling this function.
+    """
     read_path = self.query_one("#bwa_reads_Input", Input)
     ref_path = self.query_one("#bwa_ref_Input", Input)
     no_of_threads = self.query_one("#bwa_threads_Input", Input)
@@ -234,6 +328,18 @@ def run_bwa_mem(self):
 
 
 def _run_bwa_mem(self, ref_path: str, read_path: str, no_of_threads: str) -> None:
+    """
+    Executes the BWA MEM command using subprocess.
+
+    This function runs the BWA MEM command to align the reads to the reference genome
+    and saves the results to the specified output directory.
+
+    Args:
+        self: The instance of the class calling this function.
+        ref_path (str): The path to the reference genome file for BWA MEM.
+        read_path (str): The path to the reads file for BWA MEM.
+        no_of_threads (str): The number of threads to use for BWA MEM.
+    """
     try:
         bwa_mem_cmd = f"bwa mem -t {str(no_of_threads)} {str(ref_path)} {str(read_path)} -o trial/results/sam/aligned.sam"
         self.notify(bwa_mem_cmd, title="bwa mem")
@@ -307,3 +413,4 @@ def _run_bwa_mem(self, ref_path: str, read_path: str, no_of_threads: str) -> Non
 #             severity="error", timeout=10.0,
 #             title="bwa Index",
 #         )
+
