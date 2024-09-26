@@ -35,6 +35,7 @@ from textual.widgets import (
 # Setup logging configuration
 setup_logging()
 
+
 class Varcall(App[None]):
     # Key bindings for the application
     BINDINGS = [
@@ -56,15 +57,13 @@ class Varcall(App[None]):
     outputdir_name = reactive("")
     full_output_path = reactive("")
 
-    # NOTE: disabled during development for comvenience
-    # def on_mount(self) -> None:
-    #     self.action_show_help()
-
-    # def on_mount(self) -> None:
-    #     self.push_screen(HomeWidgets())
-
-    # Compose the UI layout
     def compose(self) -> ComposeResult:
+        """
+        Composes the UI layout of the application.
+
+        This method sets up the main components of the UI, including the header,
+        footer, and tabbed content for different functionalities.
+        """
         with ScrollableContainer(id="ScrollableContainer"):
             yield Header(show_clock=True)
             yield Footer(show_command_palette=True)
@@ -81,6 +80,16 @@ class Varcall(App[None]):
     # Event handler for project name input submission
     @on(Input.Submitted, "#Input_Project_name")
     def update_working_dir(self, event: Input.Submitted) -> None:
+        """
+        Updates the working directory based on the project name input.
+
+        This method is triggered when the project name input is submitted.
+        It updates the working directory, creates necessary subdirectories,
+        and notifies the user.
+
+        Args:
+            event (Input.Submitted): The event object containing the input value.
+        """
         self.workingDir = str(event.input.value)
         self.update_full_output_path()
         self.notify(
@@ -105,43 +114,97 @@ class Varcall(App[None]):
     # Event handler for output file name input change
     @on(Input.Changed, "#Input_outputfile_name")
     def update_outputfile_name(self, event: Input.Changed) -> None:
+        """
+        Updates the output file name based on the input change.
+
+        This method is triggered when the output file name input is changed.
+
+        Args:
+            event (Input.Changed): The event object containing the input value.
+        """
         self.outputfile_name = event.input.value
         self.update_full_output_path()
 
     # Event handler for output directory selection change
     @on(Select.Changed, "#Select_outputdir")
     def update_outputdir_name(self, event: Select.Changed) -> None:
+        """
+        Updates the output directory name based on the selection change.
+
+        This method is triggered when the output directory selection is changed.
+        It updates the output directory name and the full output path.
+
+        Args:
+            event (Select.Changed): The event object containing the selected value.
+        """
         self.outputdir_name = event.select.value
         self.update_full_output_path()
 
     # Event handler for download button press
     @on(Button.Pressed, "#Download_button")
     def call_run_download(self) -> None:
+        """
+        Initiates the download process when the download button is pressed.
+
+        This method is triggered when the download button is pressed.
+        It calls the run_download function to start the download process.
+        """
         run_download(self)
 
     # Event handler for FastQC button press
     @on(Button.Pressed, "#FastQC_Button")
     def call_run_FastQC(self) -> None:
+        """
+        Initiates the FastQC process when the FastQC button is pressed.
+
+        This method is triggered when the FastQC button is pressed.
+        It calls the run_FastQC function to start the FastQC process.
+        """
         run_FastQC(self)
 
     # Event handler for MultiQC button press
     @on(Button.Pressed, "#MultiQC_Button")
     def call_run_MultiQC(self) -> None:
+        """
+        Initiates the MultiQC process when the MultiQC button is pressed.
+
+        This method is triggered when the MultiQC button is pressed.
+        It calls the run_MultiQC function to start the MultiQC process.
+        """
         run_MultiQC(self)
 
     # Event handler for BWA index button press
     @on(Button.Pressed, "#bwa_index_Button")
     def call_run_bwa_index(self) -> None:
+        """
+        Initiates the BWA indexing process when the BWA index button is pressed.
+
+        This method is triggered when the BWA index button is pressed.
+        It calls the run_bwa_index function to start the BWA indexing process.
+        """
         run_bwa_index(self)
 
     # Event handler for BWA align button press
     @on(Button.Pressed, "#bwa_align_Button")
     def call_run_bwa_mem(self) -> None:
+        """
+        Initiates the BWA MEM process when the BWA align button is pressed.
+
+        This method is triggered when the BWA align button is pressed.
+        It calls the run_bwa_mem function to start the BWA MEM process.
+        """
         run_bwa_mem(self)
 
     # Event handler to view FastQC results
     @on(Button.Pressed, "#view_FastQC_res")
     def view_FastQC_res(self) -> None:
+        """
+        Opens the FastQC results in a web browser.
+
+        This method is triggered when the view FastQC results button is pressed.
+        It opens the FastQC results HTML files present
+        in the workingDir/results/fastqc directory in a new browser tab.
+        """
         dir_path = f"{self.workingDir}/results/fastqc/"
         for file in listdir(dir_path):
             if file.endswith(".html"):
@@ -150,40 +213,47 @@ class Varcall(App[None]):
     # Event handler to view MultiQC results
     @on(Button.Pressed, "#view_MultiQC_res")
     def view_MultiQC_res(self) -> None:
+        """
+        Opens the MultiQC results in a web browser.
+
+        This method is triggered when the view MultiQC results button is pressed.
+        It opens the MultiQC results HTML files present
+        in the workingDir/results/multiqc directory in a new browser tab.
+        """
         dir_path = f"{self.workingDir}/results/multiqc/"
         for file in listdir(dir_path):
             if file.endswith(".html"):
                 open_new_tab(f"{dir_path}/{file}")
 
-    # Toggle dark mode
+    # Handels the key press for Toggle dark mode
     def action_toggle_dark_mode(self) -> None:
         self.dark = not self.dark
 
-    # Run download action
+    # Handels the key press for Run download action
     def action_run_download(self) -> None:
         self.call_run_download()
 
-    # Run FastQC action
+    # Handels the key press for Run FastQC action
     def action_run_fastqc(self) -> None:
         self.call_run_FastQC()
 
-    # Run MultiQC action
+    # Handels the key press for Run MultiQC action
     def action_run_multiqc(self) -> None:
         self.call_run_MultiQC()
 
-    # Run alignment action
+    # Handels the key press for Run alignment action
     def action_run_alignment(self) -> None:
         self.call_run_bwa_mem()
 
-    # Run index action
+    # Handels the key press for Run index action
     def action_run_index(self) -> None:
         self.call_run_bwa_index()
 
-    # Show help action
+    # Handels the key press for Show help action
     def action_show_help(self) -> None:
         self.query_one(TabbedContent).active = "HelpTab"
 
-    # Exit application action
+    # Handels the key press for Exit application action
     def action_exit_app(self) -> None:
         self.push_screen(
             YesOrNo("Do you want to exit application?"), self.maybe_exit_app
@@ -205,6 +275,7 @@ class Varcall(App[None]):
         self.query_one("#output_path_label", Label).update(
             f"Saved in: {full_output_path}"
         )
+
 
 # Main entry point of the application
 if __name__ == "__main__":
