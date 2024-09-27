@@ -8,6 +8,8 @@ def view_bam(input_file, output_file, region=None):
     The view_bam function reads a BAM file, optionally filters the
     reads based on a specified genomic region,
     and writes the filtered (or unfiltered) reads to an output BAM file.
+
+    Also converts a SAM file input to BAM file
     """
     with pysam.AlignmentFile(input_file, "rb") as infile, pysam.AlignmentFile(
         output_file, "wb", header=infile.header
@@ -48,12 +50,10 @@ def flagstat_bam(input_file, out_file):
     the quality of alignments.
     """
     stats = pysam.flagstat(input_file)
-    # my_file = Path(f"{self.workingDir}/results/sam/aligned.sam.flagstat")
-    my_file = Path(out_file)
-    my_file.touch(exist_ok=True)
-    outfile = open(my_file, "w")
-    outfile.write(str(stats))
-    outfile.close()
+    out_file = Path(out_file)
+    out_file.touch(exist_ok=True)
+    with open(out_file, "w") as outfile:
+        outfile.write(str(stats))
 
 
 # 5. samtools stats equivalent in pysam
@@ -68,3 +68,8 @@ def stats_bam(input_file, output_file):
     with open(output_file, "w") as out:
         stats = str(pysam.stats(input_file))
         out.write(stats)
+
+
+if __name__ == "__main__":
+    sort_bam("aligned.sam", "aligned.sorted.sam")
+    index_bam("aligned.sorted.sam")

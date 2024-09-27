@@ -14,12 +14,6 @@ class FileSuggester(Suggester):
     async def get_suggestion(self, value: str) -> str | None:
         """
         Provides file path suggestions based on the input value.
-
-        Args:
-            value (str): The input string for which suggestions are needed.
-
-        Returns:
-            str | None: Suggested file path or None if no suggestion is found.
         """
         # Handle absolute paths
         if value.startswith("/"):
@@ -96,6 +90,7 @@ def _run_download(self, download_url: str) -> None:
             timeout=10.0,
             title="Download",
         )
+    finally:
         self.query_one("#Download_options").remove_class("running")
 
 

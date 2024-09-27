@@ -20,13 +20,7 @@ from textual.widgets import (
 
 # Importing custom modules and functions
 from modules.Bcftools_widgets import BcftoolsWidgets
-from modules.exec_func.hometab_funcs import (
-    run_bwa_index,
-    run_bwa_mem,
-    run_download,
-    run_FastQC,
-    run_MultiQC,
-)
+from modules.exec_func.hometab_funcs import *  # noqa: F403
 from modules.Help import HelpMarkdown
 from modules.Home_widgets import HomeWidgets
 from modules.logging import setup_logging
@@ -51,6 +45,11 @@ class Varcall(App[None]):
         ("d", "run_download", "Download"),
     ]
     CSS_PATH = "pyVarcall.css"
+
+
+    def on_mount(self) -> None:
+        self.action_show_help()
+
 
     # Reactive variables to track state
     workingDir = reactive("")
@@ -101,12 +100,11 @@ class Varcall(App[None]):
         self.notify(makedir)
         try:
             subprocess.run(
-                [makedir],
+                makedir.split(),
                 check=True,
                 stdout=subprocess.PIPE,
                 stderr=subprocess.PIPE,
                 text=True,
-                shell=True,
             )
         except subprocess.CalledProcessError as e:
             logging.error(f"An error occurred: {e.stderr}")
@@ -150,7 +148,7 @@ class Varcall(App[None]):
         This method is triggered when the download button is pressed.
         It calls the run_download function to start the download process.
         """
-        run_download(self)
+        run_download(self)  # noqa: F405
 
     # Event handler for FastQC button press
     @on(Button.Pressed, "#FastQC_Button")
@@ -161,7 +159,7 @@ class Varcall(App[None]):
         This method is triggered when the FastQC button is pressed.
         It calls the run_FastQC function to start the FastQC process.
         """
-        run_FastQC(self)
+        run_FastQC(self)  # noqa: F405
 
     # Event handler for MultiQC button press
     @on(Button.Pressed, "#MultiQC_Button")
@@ -172,7 +170,7 @@ class Varcall(App[None]):
         This method is triggered when the MultiQC button is pressed.
         It calls the run_MultiQC function to start the MultiQC process.
         """
-        run_MultiQC(self)
+        run_MultiQC(self)  # noqa: F405
 
     # Event handler for BWA index button press
     @on(Button.Pressed, "#bwa_index_Button")
@@ -183,7 +181,7 @@ class Varcall(App[None]):
         This method is triggered when the BWA index button is pressed.
         It calls the run_bwa_index function to start the BWA indexing process.
         """
-        run_bwa_index(self)
+        run_bwa_index(self)  # noqa: F405
 
     # Event handler for BWA align button press
     @on(Button.Pressed, "#bwa_align_Button")
@@ -194,7 +192,7 @@ class Varcall(App[None]):
         This method is triggered when the BWA align button is pressed.
         It calls the run_bwa_mem function to start the BWA MEM process.
         """
-        run_bwa_mem(self)
+        run_bwa_mem(self)  # noqa: F405
 
     # Event handler to view FastQC results
     @on(Button.Pressed, "#view_FastQC_res")
@@ -226,8 +224,6 @@ class Varcall(App[None]):
             if file.endswith(".html"):
                 open_new_tab(f"{dir_path}/{file}")
 
-    # NOTE:
-    # below code is correct but flagstat_bam() is not fully implememnted yet
 
     @on(Button.Pressed, "#view_bwa_res")
     def view_bwa_res(self) -> None:
@@ -268,7 +264,7 @@ class Varcall(App[None]):
 
     # Handels the key press for Show help action
     def action_show_help(self) -> None:
-        self.query_one(TabbedContent).active = "HelpTab"
+        self.query_one(TabbedContent).active = "SamtoolsTab"
 
     # Handels the key press for Exit application action
     def action_exit_app(self) -> None:
