@@ -126,9 +126,9 @@ Container #FastQC_widget, #MultiQC_widget, #bwa_widget{
         margin: 1 1 1 2;
         width: 60%;
     }
-    #bwa_reads_Input{
+    #bwa_reads_Input_1, #bwa_reads_Input_2{
         margin: 0 0 0 1;
-        width: 99%;
+        width: 49%;
     }
     #bwa_ref_Input{
         margin: 0 0 0 1;

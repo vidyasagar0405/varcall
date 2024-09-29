@@ -1,5 +1,10 @@
 import pysam
+
+from modules import logging
+from modules.logging import setup_logging
 from pathlib import Path
+
+setup_logging()
 
 
 # 1. samtools view equivalent in pysam
@@ -27,6 +32,7 @@ def sort_bam(input_file, output_file):
     they are in order by reference positions.
     """
     pysam.sort("-o", output_file, input_file)
+    logging.info("async sort completed")
 
 
 # 3. samtools index equivalent in pysam
@@ -70,6 +76,6 @@ def stats_bam(input_file, output_file):
         out.write(stats)
 
 
-if __name__ == "__main__":
-    sort_bam("aligned.sam", "aligned.sorted.sam")
-    index_bam("aligned.sorted.sam")
+# if __name__ == "__main__":
+#     sort_bam("aligned.sam", "aligned.sorted.sam")
+#     index_bam("aligned.sorted.sam")

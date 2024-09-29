@@ -20,6 +20,7 @@ from textual.widgets import (
 
 # Importing custom modules and functions
 from modules.Bcftools_widgets import BcftoolsWidgets
+from modules.Pipeline_widgets import PipelineWidgets
 from modules.exec_func.hometab_funcs import *  # noqa: F403
 from modules.Help import HelpMarkdown
 from modules.Home_widgets import HomeWidgets
@@ -46,10 +47,8 @@ class Varcall(App[None]):
     ]
     CSS_PATH = "pyVarcall.css"
 
-
     def on_mount(self) -> None:
         self.action_show_help()
-
 
     # Reactive variables to track state
     workingDir = reactive("")
@@ -74,6 +73,8 @@ class Varcall(App[None]):
                     yield SamtoolsWidgets()
                 with TabPane("Bcftools", id="BcftoolsTab"):
                     yield BcftoolsWidgets()
+                with TabPane("Pipeline", id="Pipeline"):
+                    yield PipelineWidgets()
                 with TabPane("Help", id="HelpTab"):
                     yield HelpMarkdown()
 
@@ -223,7 +224,6 @@ class Varcall(App[None]):
         for file in listdir(dir_path):
             if file.endswith(".html"):
                 open_new_tab(f"{dir_path}/{file}")
-
 
     @on(Button.Pressed, "#view_bwa_res")
     def view_bwa_res(self) -> None:

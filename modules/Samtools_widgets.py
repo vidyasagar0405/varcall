@@ -5,13 +5,15 @@ from textual.app import ComposeResult, on
 from textual.widgets import Button, Input, Label, Static
 from textual.containers import Container, Horizontal
 from modules.exec_func.samtools_funcs import *  # noqa: F403
+from modules.exec_func.common_funcs import get_input
 from modules.exec_func.hometab_funcs import FileSuggester
 from modules.logging import setup_logging
 
 setup_logging()
 
+
 class SamtoolsWidgets(Static):
-    
+
     file_suggester = FileSuggester(use_cache=False, case_sensitive=True)
 
     def compose(self) -> ComposeResult:
@@ -38,9 +40,9 @@ class SamtoolsWidgets(Static):
 
     @on(Button.Pressed, "#sam_view_button")
     def sam_view(self) -> None:
-        input = str(self.query_one("#sam_view_input_input", Input).value).strip()
-        ouput = str(self.query_one("#sam_view_output_input", Input).value).strip()
-        sam_range = str(self.query_one("#sam_view_range_input", Input).value).strip()
+        input = get_input(self, "sam_view_input_input")
+        ouput = get_input(self, "sam_view_output_input")
+        sam_range = get_input(self, "sam_view_range_input")
         if not sam_range:
             sam_range = None
         self.notify("samtools view starting", title="Samtools view")
@@ -54,11 +56,11 @@ class SamtoolsWidgets(Static):
 
     @on(Button.Pressed, "#sam_sort_button")
     def sam_sort(self) -> None:
-        input = str(self.query_one("#sam_sort_input_input", Input).value).strip()
-        ouput = str(self.query_one("#sam_sort_output_input", Input).value).strip()
+        input = get_input(self, "sam_sort_input_input")
+        output = get_input(self, "sam_sort_output_input")
         self.notify("samtools sort starting", title="Samtools sort")
         try:
-            threading.Thread(target=sort_bam, args=(input, ouput,)).start()  # noqa: F405
+            threading.Thread(target=sort_bam, args=(input, output,)).start()  # noqa: F405
             self.notify("samtools sort completed", title="Samtools sort")
         except SamtoolsError as err:
             self.notify(f"An error occured: {err}", title="Samtools sort")
@@ -67,7 +69,7 @@ class SamtoolsWidgets(Static):
 
     @on(Button.Pressed, "#sam_index_button")
     def sam_index(self) -> None:
-        input = str(self.query_one("#sam_index_input_input", Input).value).strip()
+        input = get_input(self, "sam_index_input_input")
         self.notify("samtools index starting", title="Samtools index")
         try:
             threading.Thread(target=index_bam, args=(input,)).start()  # noqa: F405
@@ -76,15 +78,3 @@ class SamtoolsWidgets(Static):
             self.notify(f"An error occured: {err}", title="Samtools index")
             logging.error(f"An error occured: {err}")
 
-# TODO:
-
-"""
-# Samtools Commands:
-1. samtools view       # Convert, filter, or view alignment files (BAM/CRAM/SAM).
-2. samtools sort       # Sort alignment files by coordinates or read names.
-3. samtools index      # Index a BAM or CRAM file to allow fast access to specific regions.
-4. samtools mpileup    # Generate pileup data for variant calling (deprecated in favor of bcftools mpileup).
-5. samtools flagstat   # Report alignment statistics.
-6. samtools stats      # Generate detailed statistics on the alignments.
-7. samtools depth      # Compute the depth of coverage.
-"""
