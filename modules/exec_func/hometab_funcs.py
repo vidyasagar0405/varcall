@@ -3,9 +3,9 @@ import subprocess
 import logging
 from pathlib import Path
 from modules.logging import setup_logging
-from textual.widgets import Input
 from textual.suggester import Suggester
 from modules.exec_func.samtools_funcs import flagstat_bam
+from modules.exec_func.common_funcs import get_input
 
 setup_logging()
 
@@ -35,8 +35,7 @@ def run_download(self):
     Args:
         self: The instance of the class calling this function.
     """
-    raw_url = self.query_one("#Input_url", Input)
-    download_url = raw_url.value.strip()
+    download_url = get_input(self, "Input_url")
     if not download_url:
         self.notify("Please provide a valid url", severity="warning", title="Download")
         return
@@ -104,8 +103,7 @@ def run_FastQC(self):
     Args:
         self: The instance of the class calling this function.
     """
-    input_path = self.query_one("#FastQC_Input", Input)
-    input_path = input_path.value.strip()
+    input_path = get_input(self, "FastQC_Input")
     if not input_path:
         input_path = f"{self.workingDir}/data/reads/*"
     self.notify(f"FastQC {str(input_path)}...", title="FastQC")
@@ -145,7 +143,6 @@ def _run_FastQC(self, input_path: str) -> None:
         )
         logging.info(f"FastQC completed for {str(input_path)}")
         self.notify(f"FastQC completed for {str(input_path)}", title="FastQC")
-        self.query_one("#FastQC_Horizontal").remove_class("running")
     except subprocess.CalledProcessError as e:
         logging.error(f"An error occurred during FastQC: {e.stderr}")
         self.notify(
@@ -154,6 +151,8 @@ def _run_FastQC(self, input_path: str) -> None:
             timeout=10.0,
             title="FastQC",
         )
+
+    finally:
         self.query_one("#FastQC_Horizontal").remove_class("running")
 
 
@@ -167,8 +166,7 @@ def run_MultiQC(self):
     Args:
         self: The instance of the class calling this function.
     """
-    input_path = self.query_one("#MultiQC_Input", Input)
-    input_path = input_path.value.strip()
+    input_path = get_input(self, "MultiQC_Input")
     if not input_path:
         input_path = f"{self.workingDir}/results/fastqc/"
 
@@ -209,7 +207,6 @@ def _run_MultiQC(self, input_path: str) -> None:
         )
         logging.info(f"MultiQC completed for {str(input_path)}")
         self.notify(f"MultiQC completed for {str(input_path)}", title="MultiQC")
-        self.query_one("#MultiQC_Horizontal").remove_class("running")
     except subprocess.CalledProcessError as e:
         logging.error(f"An error occurred during MultiQC: {e.stderr}")
         self.notify(
@@ -218,6 +215,8 @@ def _run_MultiQC(self, input_path: str) -> None:
             timeout=10.0,
             title="MultiQC",
         )
+
+    finally:
         self.query_one("#MultiQC_Horizontal").remove_class("running")
 
 
@@ -231,8 +230,7 @@ def run_bwa_index(self):
     Args:
         self: The instance of the class calling this function.
     """
-    input_path = self.query_one("#bwa_ref_Input", Input)
-    input_path = input_path.value.strip()
+    input_path = get_input(self, "bwa_ref_Input")
     if not input_path:
         input_path = f"{self.workingDir}/data/reference/*"
     self.notify(f"bwa indexing {str(input_path)}...", title="bwa index")
@@ -272,7 +270,6 @@ def _run_bwa_index(self, input_path: str) -> None:
         )
         logging.info(f"bwa Index completed for {str(input_path)}")
         self.notify(f"bwa Index completed for {str(input_path)}", title="bwa Index")
-        self.query_one("#bwa_Horizontal").remove_class("running")
     except subprocess.CalledProcessError as e:
         logging.error(f"An error occurred during bwa Index: {e.stderr}")
         self.notify(
@@ -281,6 +278,8 @@ def _run_bwa_index(self, input_path: str) -> None:
             timeout=10.0,
             title="bwa Index",
         )
+
+    finally:
         self.query_one("#bwa_Horizontal").remove_class("running")
 
 
@@ -294,36 +293,39 @@ def run_bwa_mem(self):
     Args:
         self: The instance of the class calling this function.
     """
-    read_path = self.query_one("#bwa_reads_Input", Input)
-    ref_path = self.query_one("#bwa_ref_Input", Input)
-    no_of_threads = self.query_one("#bwa_threads_Input", Input)
-    read_path = read_path.value.strip()
-    ref_path = ref_path.value.strip()
-    no_of_threads = no_of_threads.value.strip()
-    if read_path != 2:
-        self.notify("Enter two sample reads file path", title="bwa mem")
+    ref_path = get_input(self, "bwa_ref_Input")
+    read_path_1 = get_input(self, "bwa_reads_Input_1")
+    read_path_2 = get_input(self, "bwa_reads_Input_2")
+    no_of_threads = get_input(self, "bwa_threads_Input")
+    if not (read_path_1 and read_path_2):
+        self.notify("Enter reads file path", title="bwa mem")
     if not ref_path:
         self.notify("Enter reference genome file path", title="bwa mem")
     if not no_of_threads:
         no_of_threads = 4
     self.notify(
-        f"aligning reads {str(read_path)} to {str(read_path)} using bwa mem",
+        f"aligning reads {str(read_path_1)} {str(read_path_2)} to {str(ref_path)} using bwa mem",
         title="bwa mem",
     )
-    logging.info(f"aligning reads {str(read_path)} to {str(read_path)} using bwa mem")
+    logging.info(
+        f"aligning reads {str(read_path_1)} {str(read_path_2)} to {str(ref_path)} using bwa mem"
+    )
     self.query_one("#bwa_Horizontal").add_class("running")
     threading.Thread(
         target=_run_bwa_mem,
         args=(
             self,
             ref_path,
-            read_path,
+            read_path_1,
+            read_path_2,
             no_of_threads,
         ),
     ).start()
 
 
-def _run_bwa_mem(self, ref_path: str, read_path: str, no_of_threads: str) -> None:
+def _run_bwa_mem(
+    self, ref_path: str, read_path_1: str, read_path_2: str, no_of_threads: str
+) -> None:
     """
     Executes the BWA MEM command using subprocess.
 
@@ -337,7 +339,7 @@ def _run_bwa_mem(self, ref_path: str, read_path: str, no_of_threads: str) -> Non
         no_of_threads (str): The number of threads to use for BWA MEM.
     """
     try:
-        bwa_mem_cmd = f"bwa mem -t {str(no_of_threads)} {str(ref_path)} {str(read_path)} -o {self.workingDir}/results/sam/aligned.sam"
+        bwa_mem_cmd = f"bwa mem -t {str(no_of_threads)} {str(ref_path)} {str(read_path_1)} {str(read_path_2)} -o {self.workingDir}/results/sam/aligned.sam"
         self.notify(bwa_mem_cmd, title="bwa mem")
         logging.info("Running command: " + bwa_mem_cmd)
         subprocess.run(
@@ -349,10 +351,10 @@ def _run_bwa_mem(self, ref_path: str, read_path: str, no_of_threads: str) -> Non
             shell=True,
         )
         logging.info(
-            f"Completed aligning reads {str(read_path)} to {str(read_path)} using bwa mem"
+            f"Completed aligning reads {str(read_path_1)} {str(read_path_2)} to {str(ref_path)} using bwa mem"
         )
         self.notify(
-            f"Completed aligning reads {str(read_path)} to {str(read_path)} using bwa mem",
+            f"Completed aligning reads {str(read_path_1)} {str(read_path_2)} to {str(ref_path)} using bwa mem",
             title="bwa mem",
         )
 
@@ -370,7 +372,6 @@ def _run_bwa_mem(self, ref_path: str, read_path: str, no_of_threads: str) -> Non
             text=True,
             shell=True,
         )
-        self.query_one("#bwa_Horizontal").remove_class("running")
     except subprocess.CalledProcessError as e:
         logging.error(f"Error aligning using bwa mem: {e.stderr}")
         self.notify(
@@ -379,10 +380,11 @@ def _run_bwa_mem(self, ref_path: str, read_path: str, no_of_threads: str) -> Non
             timeout=10.0,
             title="bwa mem",
         )
+
+    finally:
         self.query_one("#bwa_Horizontal").remove_class("running")
 
 
-#
 # def run_Trimmomatic(self):
 #     input_path = self.query_one("#bwa_ref_Input", Input)
 #     input_path = input_path.value.strip()
