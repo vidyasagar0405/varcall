@@ -147,40 +147,43 @@ Container #FastQC_widget, #MultiQC_widget, #bwa_widget{
 /*  ___) / ___ \| |  | | | || |_| | |_| | |___ ___) |   | |/ ___ \| |_) | */
 /* |____/_/   \_\_|  |_| |_| \___/ \___/|_____|____/    |_/_/   \_\____/  */
 
-#sam_view_horizontal{
-    height: 5;
-    margin: 1;
+#sam_view_container, #sam_sort_container, #sam_index_container{
     Label{
         height: 3;
-        margin: 1;
+        padding: 0 1 0 1;
+        background: $panel-darken-2;
+        width: 100%;
+        content-align-vertical: middle;
     }
+    .description{
+        background: $boost;
+    }
+    background: $boost;
+    margin: 0 0 1 0;
+    height: 11;
+}
 
+#sam_view_horizontal{
+    height: auto;
+    margin: 1;
     Input{
-        width: 30%;
+        width: 29%;
     }
 }
 
 #sam_sort_horizontal{
-    height: 5;
+    height: auto;
     margin: 1;
-    Label{
-        height: 3;
-        margin: 1;
-    }
     Input{
-        width: 30%;
+        width: 45%;
     }
 }
 
 #sam_index_horizontal{
-    height: 5;
+    height: auto;
     margin: 1;
-    Label{
-        height: 3;
-        margin: 1;
-    }
     Input{
-        width: 30%;
+        width: 90%;
     }
 }
 

@@ -12,7 +12,6 @@ __licence__ = "MIT"
 from .logging import setup_logging
 from .Home_widgets import HomeWidgets
 from .exec_func.hometab_funcs import (
-    FileSuggester,
     run_FastQC,
     run_MultiQC,
     run_bwa_mem,
@@ -26,7 +25,6 @@ from .Help import HelpMarkdown
 __all__ = [
     "setup_logging",
     "HomeWidgets",
-    "FileSuggester",
     "run_bwa_index",
     "run_bwa_mem",
     "run_download",

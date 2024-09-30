@@ -1,6 +1,6 @@
 from textual.widgets import Label, LoadingIndicator, Button, Input, Select, Static
 from textual.containers import Container, Horizontal
-from modules.exec_func.hometab_funcs import FileSuggester
+from modules.exec_func.common_funcs import file_suggester
 from textual.validation import Number
 
 
@@ -31,7 +31,7 @@ class HomeWidgets(Static):
                 yield Input(
                     placeholder="outputfile name",
                     id="Input_outputfile_name",
-                    suggester=FileSuggester(use_cache=False, case_sensitive=True),
+                    suggester=file_suggester,
                 )
             with Horizontal(id="Download_options"):
                 yield Select.from_values(
@@ -47,7 +47,7 @@ class HomeWidgets(Static):
             yield Input(
                 placeholder="Input file name",
                 id="FastQC_Input",
-                suggester=FileSuggester(use_cache=False, case_sensitive=True),
+                suggester=file_suggester,
             )
             with Horizontal(id="FastQC_Horizontal"):
                 yield Label(
@@ -62,7 +62,7 @@ class HomeWidgets(Static):
             yield Input(
                 placeholder="Input file name",
                 id="MultiQC_Input",
-                suggester=FileSuggester(use_cache=False, case_sensitive=True),
+                suggester=file_suggester,
             )
             with Horizontal(id="MultiQC_Horizontal"):
                 yield Label(
@@ -78,23 +78,23 @@ class HomeWidgets(Static):
                 yield Input(
                     placeholder="Input reference genome file name",
                     id="bwa_ref_Input",
-                    suggester=FileSuggester(use_cache=False, case_sensitive=True),
+                    suggester=file_suggester,
                 )
                 yield Input(
                     placeholder="No. of threads (default=4)",
                     id="bwa_threads_Input",
-                    validators=[Number(minimum=1, maximum=200)],
+                    validators=[Number(minimum=1, maximum=500)],
                 )
             with Horizontal(id="bwa_input_horizontal_2"):
                 yield Input(
                     placeholder="Input read file",
                     id="bwa_reads_Input_1",
-                    suggester=FileSuggester(use_cache=False, case_sensitive=True),
+                    suggester=file_suggester,
                 )
                 yield Input(
                     placeholder="Input read file",
                     id="bwa_reads_Input_2",
-                    suggester=FileSuggester(use_cache=False, case_sensitive=True),
+                    suggester=file_suggester,
                 )
 
             with Horizontal(id="bwa_Horizontal"):
