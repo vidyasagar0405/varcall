@@ -1,5 +1,5 @@
 # **Help**
-## Directory Layout
+## File structure
 
 - Project Name (*working dir*)
     - Data
