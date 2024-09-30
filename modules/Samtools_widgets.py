@@ -14,6 +14,7 @@ setup_logging()
 
 class SamtoolsWidgets(Static):
     def compose(self) -> ComposeResult:
+
         with Container(id="sam_view_container"):
             yield Label("Samtools view")
             with Horizontal(id="sam_view_horizontal"):
@@ -22,6 +23,7 @@ class SamtoolsWidgets(Static):
                 yield Input( placeholder="range (optional)", id="sam_view_range_input", suggester=file_suggester,)
                 yield Button( "Convert sam to bam", id="sam_view_button",)
             yield Label("[bold #01B0DC]Description: [/bold #01B0DC]Convert .sam files to .bam files. you can also select only to convert a certain region", classes="description")
+
         with Container(id="sam_sort_container"):
             yield Label("Samtools sort")
             with Horizontal(id="sam_sort_horizontal"):
