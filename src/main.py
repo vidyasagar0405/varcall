@@ -20,11 +20,11 @@ from textual.widgets import (
 
 # Importing custom modules and functions
 from modules.Bcftools_widgets import BcftoolsWidgets
-from modules.Pipeline_widgets import PipelineWidgets
 from modules.exec_func.hometab_funcs import *  # noqa: F403
 from modules.Help import HelpMarkdown
 from modules.Home_widgets import HomeWidgets
 from modules.logging import setup_logging
+from modules.Pipeline_widgets import PipelineWidgets
 from modules.Samtools_widgets import SamtoolsWidgets
 from modules.YesOrNo import YesOrNo
 

@@ -1,24 +1,24 @@
-# py-varcall
+# pyVarcall
 
 A genome variant calling tool (wrapper) written in python using textual lib
 
 **🚧 Under early development 🚧**
 
-*Hometab and Samtoolstab works*
+*Home tab and Samtools tab works*
 
 Contributions are welcomed
 
-![Alt text](./doc/images/Hometab-image.jpg?raw=true "Title")
+![Home tab image](./doc/images/Hometab-image.jpg?raw=true "Home tab")
 
 
 
-![Alt text](./doc/images/Samtoolstab-image.jpg?raw=true "Title")
+![Samtools tab image](./doc/images/Samtoolstab-image.jpg?raw=true "Samtools tab")
 
 
 
-![Alt text](./doc/images/Pipelinetab-image.jpg?raw=true "Title")
+![Pipeline tab image](./doc/images/Pipelinetab-image.jpg?raw=true "Pipeline")
 
 
 
-![Alt text](./doc/images/Helptab-image.jpg?raw=true "Title")
+![Help tab image](./doc/images/Helptab-image.jpg?raw=true "Help tab")
 
