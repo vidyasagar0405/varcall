@@ -1,28 +1,11 @@
 import threading
 import subprocess
 import logging
-from pathlib import Path
 from modules.logging import setup_logging
-from textual.suggester import Suggester
 from modules.exec_func.samtools_funcs import flagstat_bam
 from modules.exec_func.common_funcs import get_input
 
 setup_logging()
-
-
-class FileSuggester(Suggester):
-    async def get_suggestion(self, value: str) -> str | None:
-        """
-        Provides file path suggestions based on the input value.
-        """
-        # Handle absolute paths
-        if value.startswith("/"):
-            return " "
-        # Handle invalid pattern '**' anywhere in the input
-        if "**" in value:
-            return " "
-        path = next(Path().glob(f"{value}*"), None)
-        return str(path) if path else None
 
 
 def run_download(self):
