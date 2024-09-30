@@ -36,7 +36,7 @@ class Varcall(App[None]):
     # Key bindings for the application
     BINDINGS = [
         ("f1", "show_help", "Help"),
-        ("ctrl+c", "exit_app", "Exit App"),
+        ("q", "exit_app", "Exit App"),
         ("D", "toggle_dark_mode", "Dark/Light mode"),
         ("d", "run_download", "Download"),
         ("f", "run_fastqc", "Run FastQC"),
@@ -45,7 +45,7 @@ class Varcall(App[None]):
         ("a", "run_alignment", "Align reads"),
         ("d", "run_download", "Download"),
     ]
-    CSS_PATH = "pyVarcall.css"
+    CSS_PATH = "main.css"
 
     def on_mount(self) -> None:
         self.action_show_help()
