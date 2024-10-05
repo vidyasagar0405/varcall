@@ -1,4 +1,9 @@
 # **Help**
+
+Log file is located at `
+tmp/varcall.log
+`
+
 ## File structure
 
 - Project Name (*working dir*)

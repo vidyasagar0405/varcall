@@ -21,6 +21,7 @@ from textual.widgets import (
 # Importing custom modules and functions
 from modules.Bcftools_widgets import BcftoolsWidgets
 from modules.exec_func.hometab_funcs import *  # noqa: F403
+from modules.exec_func.samtools_funcs import *  # noqa: F403
 from modules.Help import HelpMarkdown
 from modules.Home_widgets import HomeWidgets
 from modules.logging import setup_logging
@@ -205,6 +206,8 @@ class Varcall(App[None]):
         It opens the FastQC results HTML files present
         in the workingDir/results/fastqc directory in a new browser tab.
         """
+        if not self.workingDir:
+            self.workingDir = __file__
         dir_path = f"{self.workingDir}/results/fastqc/"
         for file in listdir(dir_path):
             if file.endswith(".html"):
@@ -220,6 +223,8 @@ class Varcall(App[None]):
         It opens the MultiQC results HTML files present
         in the workingDir/results/multiqc directory in a new browser tab.
         """
+        if not self.workingDir:
+            self.workingDir = __file__
         dir_path = f"{self.workingDir}/results/multiqc/"
         for file in listdir(dir_path):
             if file.endswith(".html"):
@@ -233,10 +238,24 @@ class Varcall(App[None]):
         Opens the it in a web browser.
         """
 
+        if not self.workingDir:
+            self.workingDir = __file__
         dir_path = f"{self.workingDir}/results/multiqc/sam/"
         for file in listdir(dir_path):
             if file.endswith(".html"):
                 open_new_tab(f"{dir_path}/{file}")
+
+    @on(Button.Pressed, "#sam_view_button")
+    def call_sam_view(self):
+        run_samtools_view(self)
+
+    @on(Button.Pressed, "#sam_sort_button")
+    def call_sam_sort(self):
+        run_samtools_sort(self)
+
+    @on(Button.Pressed, "#sam_index_button")
+    def call_sam_index(self):
+        run_samtools_index(self)
 
     # Handels the key press for Toggle dark mode
     def action_toggle_dark_mode(self) -> None:

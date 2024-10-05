@@ -86,6 +86,8 @@ def run_FastQC(self):
     Args:
         self: The instance of the class calling this function.
     """
+    if not self.workingDir:
+        self.workingDir = __file__
     input_path = get_input(self, "FastQC_Input")
     if not input_path:
         input_path = f"{self.workingDir}/data/reads/*"
@@ -113,6 +115,8 @@ def _run_FastQC(self, input_path: str) -> None:
         input_path (str): The path to the input file for FastQC.
     """
     try:
+        if not self.workingDir:
+            self.workingDir = __file__
         FastQC_cmd = f"fastqc {str(input_path)} -o {self.workingDir}/results/fastqc/"
         self.notify(FastQC_cmd, title="FastQC")
         logging.info("Running command: " + FastQC_cmd)
@@ -149,6 +153,8 @@ def run_MultiQC(self):
     Args:
         self: The instance of the class calling this function.
     """
+    if not self.workingDir:
+        self.workingDir = __file__
     input_path = get_input(self, "MultiQC_Input")
     if not input_path:
         input_path = f"{self.workingDir}/results/fastqc/"
@@ -177,6 +183,8 @@ def _run_MultiQC(self, input_path: str) -> None:
         input_path (str): The path to the input directory for MultiQC.
     """
     try:
+        if not self.workingDir:
+            self.workingDir = __file__
         MultiQC_cmd = f"multiqc {str(input_path)} -o {self.workingDir}/results/multiqc/"
         self.notify(MultiQC_cmd, title="MultiQC")
         logging.info("Running command: " + MultiQC_cmd)
@@ -213,6 +221,8 @@ def run_bwa_index(self):
     Args:
         self: The instance of the class calling this function.
     """
+    if not self.workingDir:
+        self.workingDir = __file__
     input_path = get_input(self, "bwa_ref_Input")
     if not input_path:
         input_path = f"{self.workingDir}/data/reference/*"
@@ -240,6 +250,8 @@ def _run_bwa_index(self, input_path: str) -> None:
         input_path (str): The path to the reference genome file for BWA indexing.
     """
     try:
+        if not self.workingDir:
+            self.workingDir = __file__
         bwa_index_cmd = f"bwa index {str(input_path)}"
         self.notify(bwa_index_cmd, title="bwa Index")
         logging.info("Running command: " + bwa_index_cmd)
@@ -276,6 +288,8 @@ def run_bwa_mem(self):
     Args:
         self: The instance of the class calling this function.
     """
+    if not self.workingDir:
+        self.workingDir = __file__
     ref_path = get_input(self, "bwa_ref_Input")
     read_path_1 = get_input(self, "bwa_reads_Input_1")
     read_path_2 = get_input(self, "bwa_reads_Input_2")
@@ -322,6 +336,8 @@ def _run_bwa_mem(
         no_of_threads (str): The number of threads to use for BWA MEM.
     """
     try:
+        if not self.workingDir:
+            self.workingDir = __file__
         bwa_mem_cmd = f"bwa mem -t {str(no_of_threads)} {str(ref_path)} {str(read_path_1)} {str(read_path_2)} -o {self.workingDir}/results/sam/aligned.sam"
         self.notify(bwa_mem_cmd, title="bwa mem")
         logging.info("Running command: " + bwa_mem_cmd)

@@ -1,49 +1,188 @@
+import os.path
 import pysam
+import asyncio
+from pysam.utils import SamtoolsError
 
-from modules import logging
+import threading
+import logging
 from modules.logging import setup_logging
 from pathlib import Path
 
+from modules.exec_func.common_funcs import get_input
+
 setup_logging()
 
-
-# 1. samtools view equivalent in pysam
-def view_bam(input_file, output_file, region=None):
-    """
-    The view_bam function reads a BAM file, optionally filters the
-    reads based on a specified genomic region,
-    and writes the filtered (or unfiltered) reads to an output BAM file.
-
-    Also converts a SAM file input to BAM file
-    """
-    with pysam.AlignmentFile(input_file, "rb") as infile, pysam.AlignmentFile(
-        output_file, "wb", header=infile.header
-    ) as outfile:
-        for read in infile.fetch(region=region) if region else infile:
-            outfile.write(read)
+def get_basename_and_ext(path) -> tuple:
+    filename = os.path.splitext(os.path.basename(path))
+    return filename
 
 
-# 2. samtools sort equivalent in pysam
-def sort_bam(input_file, output_file):
-    """
-    The sort_bam function sorts the input BAM file by coordinate order and
-    writes the sorted data to the output BAM file.
-    This is equivalent to `samtools sort` which sorts alignments to ensure
-    they are in order by reference positions.
-    """
-    pysam.sort("-o", output_file, input_file)
-    logging.info("async sort completed")
+def run_samtools_view(self):
+    if not self.workingDir:
+        self.workingDir = __file__
+    input_path = get_input(self, "sam_view_input_input")
+    output_path = get_input(self, "sam_view_output_input")
+    view_region = get_input(self, "sam_view_region_input")
+
+    if not input_path:
+        self.notify("Please provide a valid path", severity="warning", title="Samtools view")
+        return
+
+    # WARN:
+    # outputs output_file in workingdir
+    # change to add working dir or find a way to get input prefix before output_file name
+    if not output_path:
+        input_path_tuple = get_basename_and_ext(input_path)
+        last = len(input_path_tuple)-1
+        output_path = f"{input_path_tuple[0]}.view{input_path_tuple[last]}"
+
+    self.notify(f"Samtools view {str(input_path)} to {str(input_path)} ...", title="Samtools view")
+    logging.info(f"Samtools view {str(input_path)} to {str(input_path)} ...")
+    self.query_one("#sam_view_horizontal").add_class("running")
+    threading.Thread(
+        target=_run_samtools_view,
+        args=(
+            self,
+            input_path,
+            output_path,
+            view_region,
+        ),
+    ).start()
 
 
-# 3. samtools index equivalent in pysam
-def index_bam(input_file):
-    """
-    The index_bam function creates an index file for the input BAM file,
-    which allows for quick access to data from specific regions.
-    This is equivalent to `samtools index` and generates a .bai file
-    which is essential for many downstream analyses.
-    """
-    pysam.index(input_file)
+
+def _run_samtools_view(self, input_file, output_file, view_region):
+
+    try:
+        samtools_view_cmd = f"samtools view {input_file} -o {output_file} region={view_region}"
+        self.notify(samtools_view_cmd, title="Samtools view")
+        logging.info("Running command: " + samtools_view_cmd)
+
+        with pysam.AlignmentFile(input_file, "rb") as infile, pysam.AlignmentFile(
+            output_file, "wb", header=infile.header
+        ) as outfile:
+            for read in infile.fetch(region=view_region) if view_region else infile:
+                outfile.write(read)
+
+        logging.info(f"Samtools view completed for {str(input_file)}")
+        self.notify(f"Samtools view completed for {str(input_file)}", title="Samtools view")
+
+    except SamtoolsError as e:
+        logging.error(f"An error occurred during Samtools view: {e}")
+        self.notify(
+            f"An error occurred during Samtools view: {e}",
+            severity="error",
+            timeout=10.0,
+            title="Samtools view",
+        )
+
+    finally:
+        self.query_one("#sam_view_horizontal").remove_class("running")
+
+
+def run_samtools_sort(self):
+    if not self.workingDir:
+        self.workingDir = __file__
+    input_path = get_input(self, "sam_sort_input_input")
+    output_path = get_input(self, "sam_sort_output_input")
+
+    if not input_path:
+        self.notify("Please provide a valid path", severity="warning", title="Samtools sort")
+        return
+
+    # WARN:
+    # outputs output_file in workingdir
+    # change to add working dir or find a way to get input prefix before output_file name
+    if not output_path:
+        input_path_tuple = get_basename_and_ext(input_path)
+        last = len(input_path_tuple)-1
+        output_path = f"{input_path_tuple[0]}.sorted{input_path_tuple[last]}"
+
+    self.notify(f"Samtools sort {str(input_path)} to {str(input_path)} ...", title="Samtools sort")
+    logging.info(f"Samtools sort {str(input_path)} to {str(input_path)} ...")
+    self.query_one("#sam_sort_horizontal").add_class("running")
+    threading.Thread(
+        target=_run_samtools_sort,
+        args=(
+            self,
+            input_path,
+            output_path,
+        ),
+    ).start()
+
+def _run_samtools_sort(self, input_file, output_file):
+
+    try:
+        samtools_sort_cmd = f"samtools sort {input_file} -o {output_file}"
+        self.notify(samtools_sort_cmd, title="Samtools view")
+        logging.info("Running command: " + samtools_sort_cmd)
+
+        async def asynce_sam_sort():
+            pysam.sort("-o", output_file, input_file)
+             logging.info(f"Samtools sort completed for {str(input_file)}")
+            self.notify(f"Samtools sort completed for {str(input_file)}", title="Samtools sort")
+        asynce_sam_sort()
+
+        await
+
+    except SamtoolsError as e:
+        logging.error(f"An error occurred during Samtools sort: {e}")
+        self.notify(
+            f"An error occurred during Samtools sort: {e}",
+            severity="error",
+            timeout=10.0,
+            title="Samtools sort",
+        )
+
+    finally:
+        self.query_one("#sam_sort_horizontal").remove_class("running")
+
+
+def run_samtools_index(self):
+    if not self.workingDir:
+        self.workingDir = __file__
+    input_path = get_input(self, "sam_index_input_input")
+
+    if not input_path:
+        self.notify("Please provide a valid path", severity="warning", title="Samtools index")
+        return
+
+    self.notify(f"Samtools index {str(input_path)} to {str(input_path)} ...", title="Samtools index")
+    logging.info(f"Samtools index {str(input_path)} to {str(input_path)} ...")
+    self.query_one("#sam_index_horizontal").add_class("running")
+    threading.Thread(
+        target=_run_samtools_index,
+        args=(
+            self,
+            input_path,
+        ),
+    ).start()
+
+def _run_samtools_index(self, input_file):
+
+
+    try:
+        samtools_index_cmd = f"samtools index {input_file}"
+        self.notify(samtools_index_cmd, title="Samtools index")
+        logging.info("Running command: " + samtools_index_cmd)
+
+        pysam.index(input_file)
+
+        logging.info(f"Samtools index completed for {str(input_file)}")
+        self.notify(f"Samtools index completed for {str(input_file)}", title="Samtools index")
+
+    except SamtoolsError as e:
+        logging.error(f"An error occurred during Samtools index: {e}")
+        self.notify(
+            f"An error occurred during Samtools index: {e}",
+            severity="error",
+            timeout=10.0,
+            title="Samtools index",
+        )
+
+    finally:
+        self.query_one("#sam_index_horizontal").remove_class("running")
+
 
 
 # 4. samtools flagstat equivalent in pysam
@@ -74,8 +213,3 @@ def stats_bam(input_file, output_file):
     with open(output_file, "w") as out:
         stats = str(pysam.stats(input_file))
         out.write(stats)
-
-
-# if __name__ == "__main__":
-#     sort_bam("aligned.sam", "aligned.sorted.sam")
-#     index_bam("aligned.sorted.sam")
