@@ -73,7 +73,7 @@
 Container #FastQC_widget, #MultiQC_widget, #bwa_widget{
     width: auto;
     background: $boost;
-    height: 12;
+    height: 13;
     margin: 1 0 0 0;
     .running #FastQC_Loading{display: block;}
     .running #MultiQC_Loading{display: block;}
@@ -107,6 +107,9 @@ Container #FastQC_widget, #MultiQC_widget, #bwa_widget{
         margin: 1 1 1 2;
         width: 70%;
     }
+    #FastQC_input_input,#FastQC_output_input {
+        width: 49%;
+    }
 }
 
 #MultiQC_widget{
@@ -114,10 +117,13 @@ Container #FastQC_widget, #MultiQC_widget, #bwa_widget{
         margin: 1 1 1 2;
         width: 70%;
     }
+    #MultiQC_input_input,#MultiQC_output_input {
+        width: 49%;
+    }
 }
 
 #bwa_widget{
-    height: 18;
+    height: 20;
     Input{
         /* margin: 0 0 1 1; */
         width: 99%;
@@ -126,17 +132,21 @@ Container #FastQC_widget, #MultiQC_widget, #bwa_widget{
         margin: 1 1 1 2;
         width: 60%;
     }
-    #bwa_reads_Input_1, #bwa_reads_Input_2{
+    #bwa_reads_input_1, #bwa_reads_input_2{
         margin: 0 0 0 1;
         width: 49%;
     }
-    #bwa_ref_Input{
+    #bwa_ref_input{
         margin: 0 0 0 1;
         width: 75%;
     }
-    #bwa_threads_Input{
+    #bwa_threads_input{
         margin: 0 0 0 1;
         width: 24%;
+    }
+    #bwa_output_input{
+        margin: 0 0 0 1;
+        width: 98%;
     }
 
 }

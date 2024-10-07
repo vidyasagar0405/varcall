@@ -146,8 +146,8 @@ def run_samtools_index(self):
         self.notify("Please provide a valid path", severity="warning", title="Samtools index")
         return
 
-    self.notify(f"Samtools index {str(input_path)} to {str(input_path)} ...", title="Samtools index")
-    logging.info(f"Samtools index {str(input_path)} to {str(input_path)} ...")
+    self.notify(f"Samtools index {str(input_path)} ...", title="Samtools index")
+    logging.info(f"Samtools index {str(input_path)} ...")
     self.query_one("#sam_index_horizontal").add_class("running")
     threading.Thread(
         target=_run_samtools_index,
@@ -212,3 +212,4 @@ def stats_bam(input_file, output_file):
     with open(output_file, "w") as out:
         stats = str(pysam.stats(input_file))
         out.write(stats)
+

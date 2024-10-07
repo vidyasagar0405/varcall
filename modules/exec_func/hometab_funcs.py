@@ -88,9 +88,13 @@ def run_FastQC(self):
     """
     if not self.workingDir:
         self.workingDir = __file__
-    input_path = get_input(self, "FastQC_Input")
+    input_path = get_input(self, "FastQC_input_input")
+    output_path = get_input(self, "FastQC_output_input")
     if not input_path:
         input_path = f"{self.workingDir}/data/reads/*"
+    if not output_path:
+        output_path = f"{self.workingDir}/results/fastqc/"
+
     self.notify(f"FastQC {str(input_path)}...", title="FastQC")
     logging.info(f"FastQC {str(input_path)}...")
     self.query_one("#FastQC_Horizontal").add_class("running")
@@ -99,11 +103,12 @@ def run_FastQC(self):
         args=(
             self,
             input_path,
+            output_path,
         ),
     ).start()
 
 
-def _run_FastQC(self, input_path: str) -> None:
+def _run_FastQC(self, input_path: str, output_path: str) -> None:
     """
     Executes the FastQC command using subprocess.
 
@@ -115,9 +120,7 @@ def _run_FastQC(self, input_path: str) -> None:
         input_path (str): The path to the input file for FastQC.
     """
     try:
-        if not self.workingDir:
-            self.workingDir = __file__
-        FastQC_cmd = f"fastqc {str(input_path)} -o {self.workingDir}/results/fastqc/"
+        FastQC_cmd = f"fastqc {str(input_path)} -o {str(output_path)}"
         self.notify(FastQC_cmd, title="FastQC")
         logging.info("Running command: " + FastQC_cmd)
         subprocess.run(
@@ -155,9 +158,12 @@ def run_MultiQC(self):
     """
     if not self.workingDir:
         self.workingDir = __file__
-    input_path = get_input(self, "MultiQC_Input")
+    input_path = get_input(self, "MultiQC_input_input")
+    output_path = get_input(self, "MultiQC_output_input")
     if not input_path:
         input_path = f"{self.workingDir}/results/fastqc/"
+    if not output_path:
+        output_path = f"{self.workingDir}/results/multiqc/"
 
     self.notify(f"MultiQC {str(input_path)}...", title="MultiQC")
     logging.info(f"MultiQC {str(input_path)}...")
@@ -167,11 +173,12 @@ def run_MultiQC(self):
         args=(
             self,
             input_path,
+            output_path,
         ),
     ).start()
 
 
-def _run_MultiQC(self, input_path: str) -> None:
+def _run_MultiQC(self, input_path: str, output_path: str) -> None:
     """
     Executes the MultiQC command using subprocess.
 
@@ -185,7 +192,7 @@ def _run_MultiQC(self, input_path: str) -> None:
     try:
         if not self.workingDir:
             self.workingDir = __file__
-        MultiQC_cmd = f"multiqc {str(input_path)} -o {self.workingDir}/results/multiqc/"
+        MultiQC_cmd = f"multiqc {str(input_path)} -o {str(output_path)}"
         self.notify(MultiQC_cmd, title="MultiQC")
         logging.info("Running command: " + MultiQC_cmd)
         subprocess.run(
@@ -223,7 +230,7 @@ def run_bwa_index(self):
     """
     if not self.workingDir:
         self.workingDir = __file__
-    input_path = get_input(self, "bwa_ref_Input")
+    input_path = get_input(self, "bwa_ref_input")
     if not input_path:
         input_path = f"{self.workingDir}/data/reference/*"
     self.notify(f"bwa indexing {str(input_path)}...", title="bwa index")
@@ -291,8 +298,9 @@ def run_bwa_mem(self):
     if not self.workingDir:
         self.workingDir = __file__
     ref_path = get_input(self, "bwa_ref_Input")
-    read_path_1 = get_input(self, "bwa_reads_Input_1")
-    read_path_2 = get_input(self, "bwa_reads_Input_2")
+    read_path_1 = get_input(self, "bwa_reads_input_1")
+    read_path_2 = get_input(self, "bwa_reads_input_2")
+    output_path = get_input(self, "bwa_output_input")
     no_of_threads = get_input(self, "bwa_threads_Input")
     if not (read_path_1 and read_path_2):
         self.notify("Enter reads file path", title="bwa mem")
@@ -300,6 +308,8 @@ def run_bwa_mem(self):
         self.notify("Enter reference genome file path", title="bwa mem")
     if not no_of_threads:
         no_of_threads = 4
+    if not output_path:
+        output_path = f"{self.workingDir}/results/sam/aligned.sam"
     self.notify(
         f"aligning reads {str(read_path_1)} {str(read_path_2)} to {str(ref_path)} using bwa mem",
         title="bwa mem",
@@ -316,13 +326,13 @@ def run_bwa_mem(self):
             read_path_1,
             read_path_2,
             no_of_threads,
+            output_path,
         ),
     ).start()
 
 
 def _run_bwa_mem(
-    self, ref_path: str, read_path_1: str, read_path_2: str, no_of_threads: str
-) -> None:
+    self, ref_path: str, read_path_1: str, read_path_2: str, no_of_threads: str, output_path) -> None:
     """
     Executes the BWA MEM command using subprocess.
 
@@ -338,7 +348,7 @@ def _run_bwa_mem(
     try:
         if not self.workingDir:
             self.workingDir = __file__
-        bwa_mem_cmd = f"bwa mem -t {str(no_of_threads)} {str(ref_path)} {str(read_path_1)} {str(read_path_2)} -o {self.workingDir}/results/sam/aligned.sam"
+        bwa_mem_cmd = f"bwa mem -t {str(no_of_threads)} {str(ref_path)} {str(read_path_1)} {str(read_path_2)} -o {str(output_path)}"
         self.notify(bwa_mem_cmd, title="bwa mem")
         logging.info("Running command: " + bwa_mem_cmd)
         subprocess.run(

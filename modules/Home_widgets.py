@@ -37,7 +37,9 @@ class HomeWidgets(Static):
 
         with Container(id="FastQC_widget"):
             yield Label("FastQC", id="FastQC_title")
-            yield Input( placeholder="Input file name", id="FastQC_Input", suggester=file_suggester)
+            with Horizontal(id="MultiQC_horizontal"):
+                yield Input( placeholder="Input file name", id="FastQC_input_input", suggester=file_suggester)
+                yield Input( placeholder="Output file name", id="FastQC_output_input", suggester=file_suggester)
 
             with Horizontal(id="FastQC_Horizontal"):
                 yield Label( "FastQCs the files in the workingdir/data/reads directory [u]if the input field is left empty[/u]", id="bwa_description")
@@ -47,7 +49,9 @@ class HomeWidgets(Static):
 
         with Container(id="MultiQC_widget"):
             yield Label("MultiQC", id="MultiQC_title")
-            yield Input( placeholder="Input file name", id="MultiQC_Input", suggester=file_suggester)
+            with Horizontal(id="MultiQC_horizontal"):
+                yield Input( placeholder="Input file name", id="MultiQC_input_input", suggester=file_suggester)
+                yield Input( placeholder="Output file name", id="MultiQC_output_input", suggester=file_suggester)
 
             with Horizontal(id="MultiQC_Horizontal"):
                 yield Label(
@@ -62,12 +66,14 @@ class HomeWidgets(Static):
             yield Label("BWA (alignment uses mem)", id="bwa_title")
 
             with Horizontal(id="bwa_input_horizontal_1"):
-                yield Input( placeholder="Input reference genome file name", id="bwa_ref_Input", suggester=file_suggester)
-                yield Input( placeholder="No. of threads (default=4)", id="bwa_threads_Input", validators=[Number(minimum=1, maximum=500)])
+                yield Input( placeholder="Input reference genome file name", id="bwa_ref_input", suggester=file_suggester)
+                yield Input( placeholder="No. of threads (default=4)", id="bwa_threads_input", validators=[Number(minimum=1, maximum=500)])
 
             with Horizontal(id="bwa_input_horizontal_2"):
-                yield Input( placeholder="Input read file", id="bwa_reads_Input_1", suggester=file_suggester)
-                yield Input( placeholder="Input read file", id="bwa_reads_Input_2", suggester=file_suggester)
+                yield Input( placeholder="Input read file", id="bwa_reads_input_1", suggester=file_suggester)
+                yield Input( placeholder="Input read file", id="bwa_reads_input_2", suggester=file_suggester)
+
+            yield Input( placeholder="Output file name", id="bwa_output_input", suggester=file_suggester)
 
             with Horizontal(id="bwa_Horizontal"):
                 yield Label(
