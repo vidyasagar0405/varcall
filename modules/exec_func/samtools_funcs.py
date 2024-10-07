@@ -116,14 +116,13 @@ def _run_samtools_sort(self, input_file, output_file):
         samtools_sort_cmd = f"samtools sort {input_file} -o {output_file}"
         self.notify(samtools_sort_cmd, title="Samtools view")
         logging.info("Running command: " + samtools_sort_cmd)
+        pysam.sort("-o", output_file, input_file)
 
-        async def asynce_sam_sort():
-            pysam.sort("-o", output_file, input_file)
-             logging.info(f"Samtools sort completed for {str(input_file)}")
-            self.notify(f"Samtools sort completed for {str(input_file)}", title="Samtools sort")
-        asynce_sam_sort()
 
-        await
+        
+        logging.info(f"Samtools sort completed for {str(input_file)}")
+        self.notify(f"Samtools sort completed for {str(input_file)}", title="Samtools sort")
+
 
     except SamtoolsError as e:
         logging.error(f"An error occurred during Samtools sort: {e}")
