@@ -1,11 +1,7 @@
-import threading
-from pysam.utils import SamtoolsError
-import logging
-from textual.app import ComposeResult, on
+from textual.app import ComposeResult
 from textual.widgets import Button, Input, Label, Static
 from textual.containers import Container, Horizontal
 from modules.exec_func.samtools_funcs import *  # noqa: F403
-from modules.exec_func.common_funcs import get_input
 from modules.exec_func.common_funcs import file_suggester
 from modules.logging import setup_logging
 

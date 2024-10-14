@@ -1,7 +1,7 @@
 # **Help**
 
 Log file is located at `
-tmp/varcall.log
+/tmp/varcall.log
 `
 
 ## File structure

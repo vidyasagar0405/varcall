@@ -20,6 +20,7 @@ from textual.widgets import (
 
 # Importing custom modules and functions
 from modules.Bcftools_widgets import BcftoolsWidgets
+from modules.exec_func.bcftools_funcs import run_bcf_call, run_bcf_mpileup
 from modules.exec_func.hometab_funcs import *  # noqa: F403
 from modules.exec_func.samtools_funcs import *  # noqa: F403
 from modules.Help import HelpMarkdown
@@ -256,6 +257,14 @@ class Varcall(App[None]):
     @on(Button.Pressed, "#sam_index_button")
     def call_sam_index(self):
         run_samtools_index(self)
+
+    @on(Button.Pressed, "#bcf_mpileup_button")
+    def call_bcf_mpileup(self):
+        run_bcf_mpileup(self)
+
+    @on(Button.Pressed, "#bcf_call_button")
+    def call_bcf_call(self):
+        run_bcf_call(self)
 
     # Handels the key press for Toggle dark mode
     def action_toggle_dark_mode(self) -> None:

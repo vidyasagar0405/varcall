@@ -204,7 +204,7 @@ Container #FastQC_widget, #MultiQC_widget, #bwa_widget{
 | |_) | |___|  _|   | || |_| | |_| | |___ ___) |   | |/ ___ \| |_) |
 |____/ \____|_|     |_| \___/ \___/|_____|____/    |_/_/   \_\____/
 */
-#bam_mpileup_container, #bam_call_container, #bam_filter_container, #bam_norm_container, #bam_stats_container{
+#bcf_mpileup_container, #bcf_call_container, #bcf_filter_container, #bcf_norm_container, #bcf_stats_container{
     Label{
         height: 3;
         padding: 0 1 0 1;
@@ -220,7 +220,7 @@ Container #FastQC_widget, #MultiQC_widget, #bwa_widget{
     height: 11;
 }
 
-#bam_mpileup_horizontal, #bam_filter_horizontal{
+#bcf_mpileup_horizontal, #bcf_filter_horizontal{
     height: auto;
     margin: 1;
     Input{
@@ -228,7 +228,7 @@ Container #FastQC_widget, #MultiQC_widget, #bwa_widget{
     }
 }
 
-#bam_call_horizontal, #bam_norm_horizontal, #bam_stats_horizontal{
+#bcf_call_horizontal, #bcf_norm_horizontal, #bcf_stats_horizontal{
     height: auto;
     margin: 1;
     Input{
