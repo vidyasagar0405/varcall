@@ -16,6 +16,10 @@ Contributions are welcomed
 
 
 
+![Bcftools tab image](./doc/images/Bcftoolstab-image.jpg?raw=true "Bcftools tab")
+
+
+
 ![Pipeline tab image](./doc/images/Pipelinetab-image.jpg?raw=true "Pipeline")
 
 
