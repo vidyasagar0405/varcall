@@ -204,6 +204,37 @@ Container #FastQC_widget, #MultiQC_widget, #bwa_widget{
 | |_) | |___|  _|   | || |_| | |_| | |___ ___) |   | |/ ___ \| |_) |
 |____/ \____|_|     |_| \___/ \___/|_____|____/    |_/_/   \_\____/
 */
+#bam_mpileup_container, #bam_call_container, #bam_filter_container, #bam_norm_container, #bam_stats_container{
+    Label{
+        height: 3;
+        padding: 0 1 0 1;
+        background: $panel-darken-2;
+        width: 100%;
+        content-align-vertical: middle;
+    }
+    .description{
+        background: $boost;
+    }
+    background: $boost;
+    margin: 0 0 1 0;
+    height: 11;
+}
+
+#bam_mpileup_horizontal, #bam_filter_horizontal{
+    height: auto;
+    margin: 1;
+    Input{
+        width: 30%;
+    }
+}
+
+#bam_call_horizontal, #bam_norm_horizontal, #bam_stats_horizontal{
+    height: auto;
+    margin: 1;
+    Input{
+        width: 45%;
+    }
+}
 
 
 /*
