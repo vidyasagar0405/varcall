@@ -30,6 +30,7 @@ def run_bcf_mpileup(self):
     self.notify(f"bcf mpileup {str(input_path)}...", title="bcf mpileup")
     logging.info(f"bcf mpileup {str(input_path)}...")
     self.query_one("#bcf_mpileup_horizontal").add_class("running")
+
     threading.Thread(
         target=_run_bcf_mpileup,
         args=(
@@ -50,12 +51,11 @@ def _run_bcf_mpileup(self, ref: str, input_path: str, output_path: str) -> None:
         self.notify(bcf_mpileup_cmd, title="bcf mpileup")
         logging.info("Running command: " + bcf_mpileup_cmd)
         subprocess.run(
-            [bcf_mpileup_cmd],
+            bcf_mpileup_cmd.split(),
             check=True,
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,
             text=True,
-            shell=True,
         )
         logging.info(f"bcf mpileup completed for {str(input_path)}")
         self.notify(f"bcf mpileup completed for {str(input_path)}", title="bcf mpileup")
@@ -111,12 +111,11 @@ def _run_bcf_call(self, input_path: str, output_path: str) -> None:
         self.notify(bcf_call_cmd, title="bcf call")
         logging.info("Running command: " + bcf_call_cmd)
         subprocess.run(
-            [bcf_call_cmd],
+            bcf_call_cmd.split(),
             check=True,
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,
             text=True,
-            shell=True,
         )
         logging.info(f"bcf call completed for {str(input_path)}")
         self.notify(f"bcf call completed for {str(input_path)}", title="bcf call")
@@ -172,12 +171,11 @@ def _run_bcf_filter(self,filter: str, input_path: str, output_path: str) -> None
         self.notify(bcf_filter_cmd, title="bcf filter")
         logging.info("Running command: " + bcf_filter_cmd)
         subprocess.run(
-            [bcf_filter_cmd],
+            bcf_filter_cmd.split(),
             check=True,
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,
             text=True,
-            shell=True,
         )
         logging.info(f"bcf filter completed for {str(input_path)}")
         self.notify(f"bcf filter completed for {str(input_path)}", title="bcf filter")
@@ -234,12 +232,11 @@ def _run_bcf_norm(self, input_path: str, output_path: str) -> None:
         self.notify(bcf_norm_cmd, title="bcf norm")
         logging.info("Running command: " + bcf_norm_cmd)
         subprocess.run(
-            [bcf_norm_cmd],
+            bcf_norm_cmd.split(),
             check=True,
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,
             text=True,
-            shell=True,
         )
         logging.info(f"bcf norm completed for {str(input_path)}")
         self.notify(f"bcf norm completed for {str(input_path)}", title="bcf norm")
@@ -295,12 +292,11 @@ def _run_bcf_stats(self, input_path: str, output_path: str) -> None:
         self.notify(bcf_stats_cmd, title="bcf stats")
         logging.info("Running command: " + bcf_stats_cmd)
         subprocess.run(
-            [bcf_stats_cmd],
+            bcf_stats_cmd.split(),
             check=True,
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,
             text=True,
-            shell=True,
         )
         logging.info(f"bcf stats completed for {str(input_path)}")
         self.notify(f"bcf stats completed for {str(input_path)}", title="bcf stats")

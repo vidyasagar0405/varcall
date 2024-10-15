@@ -45,7 +45,6 @@ class Varcall(App[None]):
         ("m", "run_multiqc", "Run MultiQC"),
         ("i", "run_index", "Index reference genome"),
         ("a", "run_alignment", "Align reads"),
-        ("d", "run_download", "Download"),
     ]
     CSS_PATH = "main.css"
 
