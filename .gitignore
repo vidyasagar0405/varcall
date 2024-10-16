@@ -170,6 +170,8 @@ clean.sh
 excali*/
 nohup.out
 
+snapshot_report.html
+
 #local backups
 
 .bak
