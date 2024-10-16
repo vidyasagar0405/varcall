@@ -8,7 +8,7 @@ import logging
 from modules.logging import setup_logging
 from pathlib import Path
 
-from modules.exec_func.common_funcs import get_input
+from modules.exec.common  import get_input
 
 setup_logging()
 

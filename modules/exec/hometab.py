@@ -1,11 +1,10 @@
 import os
-from pathlib import Path
 import threading
 import subprocess
 import logging
 from modules.logging import setup_logging
-from modules.exec_func.samtools_funcs import flagstat_bam
-from modules.exec_func.common_funcs import get_input, find_matching_files
+from modules.exec.samtools  import flagstat_bam
+from modules.exec.common  import get_input, find_matching_files
 
 setup_logging()
 
@@ -298,28 +297,26 @@ def run_bwa_mem(self):
     if not self.workingDir:
         self.workingDir = __file__
 
-    ref_path = get_input(self, "bwa_ref_Input")
+    ref_path = get_input(self, "bwa_ref_input")
     read_path_1 = get_input(self, "bwa_reads_input_1")
     read_path_2 = get_input(self, "bwa_reads_input_2")
     output_path = get_input(self, "bwa_output_input")
-    no_of_threads = get_input(self, "bwa_threads_Input")
+    no_of_threads = get_input(self, "bwa_threads_input")
 
     if not (read_path_1 and read_path_2):
-        self.notify("Enter reads file path", title="bwa mem")
+        self.notify("Enter reads file path", title="bwa mem", severity="warning")
+        return
     if not ref_path:
-        self.notify("Enter reference genome file path", title="bwa mem")
+        self.notify("Enter reference genome file path", title="bwa mem", severity="warning")
+        return
     if not no_of_threads:
         no_of_threads = 4
     if not output_path:
         output_path = f"{self.workingDir}/results/sam/aligned.sam"
 
-    self.notify(
-        f"aligning reads {str(read_path_1)} {str(read_path_2)} to {str(ref_path)} using bwa mem",
-        title="bwa mem",
-    )
-    logging.info(
-        f"aligning reads {str(read_path_1)} {str(read_path_2)} to {str(ref_path)} using bwa mem"
-    )
+    self.notify( f"aligning reads {str(read_path_1)} {str(read_path_2)} to {str(ref_path)} using bwa mem", title="bwa mem",)
+    logging.info( f"aligning reads {str(read_path_1)} {str(read_path_2)} to {str(ref_path)} using bwa mem")
+
     self.query_one("#bwa_Horizontal").add_class("running")
 
     threading.Thread(

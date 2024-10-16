@@ -10,7 +10,7 @@ def read_markdown_file(file_path: str) -> str:
 
 
 # Specify the path to the Help.md file
-help_markdown_path = Path("modules/Help.md")
+help_markdown_path = Path("./modules/Help/Help.md")
 
 # Read the content of the Markdown file
 help_markdown_content = read_markdown_file(help_markdown_path)

@@ -2,7 +2,7 @@ import logging
 import subprocess
 import threading
 
-from modules.exec_func.common_funcs import get_input
+from modules.exec.common  import get_input
 from modules.logging import setup_logging
 
 setup_logging()
@@ -18,13 +18,13 @@ def run_bcf_mpileup(self):
     input_path = get_input(self, "bcf_mpileup_input_input")
     output_path = get_input(self, "bcf_mpileup_output_input")
     if not input_path:
-        self.notify("Please provide a valid path", severity="warning", title="Samtools view")
+        self.notify("Please provide a valid path", severity="warning", title="Bcftools mpileup")
         return
     if not output_path:
-        self.notify("Please provide a valid path", severity="warning", title="Samtools view")
+        self.notify("Please provide a valid path", severity="warning", title="Bcftools mpileup")
         return
     if not ref:
-        self.notify("Please provide a valid path", severity="warning", title="Samtools view")
+        self.notify("Please provide a valid path", severity="warning", title="Bcftools mpileup")
         return
 
     self.notify(f"bcf mpileup {str(input_path)}...", title="bcf mpileup")
@@ -83,10 +83,10 @@ def run_bcf_call(self):
     input_path = get_input(self, "bcf_call_input_input")
     output_path = get_input(self, "bcf_call_output_input")
     if not input_path:
-        self.notify("Please provide a valid path", severity="warning", title="Samtools view")
+        self.notify("Please provide a valid path", severity="warning", title="Bcftools call")
         return
     if not output_path:
-        self.notify("Please provide a valid path", severity="warning", title="Samtools view")
+        self.notify("Please provide a valid path", severity="warning", title="Bcftools call")
         return
 
     self.notify(f"bcf call {str(input_path)}...", title="bcf call")
@@ -141,11 +141,15 @@ def run_bcf_filter(self):
     filter = get_input(self, "bcf_filter_filter_input")
     input_path = get_input(self, "bcf_filter_input_input")
     output_path = get_input(self, "bcf_filter_output_input")
+
+    if not filter:
+        self.notify("Please provide a valid path", severity="warning", title="Bcftools filter")
+        return
     if not input_path:
-        self.notify("Please provide a valid path", severity="warning", title="Samtools view")
+        self.notify("Please provide a valid path", severity="warning", title="Bcftools filter")
         return
     if not output_path:
-        self.notify("Please provide a valid path", severity="warning", title="Samtools view")
+        self.notify("Please provide a valid path", severity="warning", title="Bcftools filter")
         return
 
     self.notify(f"bcf filter {str(input_path)}...", title="bcf filter")
@@ -204,10 +208,10 @@ def run_bcf_norm(self):
     input_path = get_input(self, "bcf_norm_input_input")
     output_path = get_input(self, "bcf_norm_output_input")
     if not input_path:
-        self.notify("Please provide a valid path", severity="warning", title="Samtools view")
+        self.notify("Please provide a valid path", severity="warning", title="Bcftools norm")
         return
     if not output_path:
-        self.notify("Please provide a valid path", severity="warning", title="Samtools view")
+        self.notify("Please provide a valid path", severity="warning", title="Bcftools norm")
         return
 
     self.notify(f"bcf norm {str(input_path)}...", title="bcf norm")
@@ -264,10 +268,10 @@ def run_bcf_stats(self):
     input_path = get_input(self, "bcf_stats_input_input")
     output_path = get_input(self, "bcf_stats_output_input")
     if not input_path:
-        self.notify("Please provide a valid path", severity="warning", title="Samtools view")
+        self.notify("Please provide a valid path", severity="warning", title="Bcftools stats")
         return
     if not output_path:
-        self.notify("Please provide a valid path", severity="warning", title="Samtools view")
+        self.notify("Please provide a valid path", severity="warning", title="Bcftools stats")
         return
 
     self.notify(f"bcf stats {str(input_path)}...", title="bcf stats")

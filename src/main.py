@@ -19,16 +19,16 @@ from textual.widgets import (
 )
 
 # Importing custom modules and functions
-from modules.Bcftools_widgets import BcftoolsWidgets
-from modules.exec_func.bcftools_funcs import run_bcf_call, run_bcf_mpileup
-from modules.exec_func.hometab_funcs import *  # noqa: F403
-from modules.exec_func.samtools_funcs import *  # noqa: F403
-from modules.Help import HelpMarkdown
-from modules.Home_widgets import HomeWidgets
+from modules.widgets.Bcftools import BcftoolsWidgets
+from modules.exec.bcftools import run_bcf_call, run_bcf_filter, run_bcf_mpileup, run_bcf_stats, run_bcf_norm
+from modules.exec.hometab import *  # noqa: F403
+from modules.exec.samtools import *  # noqa: F403
+from modules.Help.Help import HelpMarkdown
+from modules.widgets.Home import HomeWidgets
 from modules.logging import setup_logging
-from modules.Pipeline_widgets import PipelineWidgets
-from modules.Samtools_widgets import SamtoolsWidgets
-from modules.YesOrNo import YesOrNo
+from modules.widgets.Pipeline import PipelineWidgets
+from modules.widgets.Samtools import SamtoolsWidgets
+from modules.widgets.YesOrNo import YesOrNo
 
 # Setup logging configuration
 setup_logging()
@@ -264,6 +264,19 @@ class Varcall(App[None]):
     @on(Button.Pressed, "#bcf_call_button")
     def call_bcf_call(self):
         run_bcf_call(self)
+
+    @on(Button.Pressed, "#bcf_filter_button")
+    def call_bcf_filter(self):
+        run_bcf_filter(self)
+
+    @on(Button.Pressed, "#bcf_stats_button")
+    def call_bcf_stats(self):
+        run_bcf_stats(self)
+
+    @on(Button.Pressed, "#bcf_norm_button")
+    def call_bcf_norm(self):
+        run_bcf_norm(self)
+
 
     # Handels the key press for Toggle dark mode
     def action_toggle_dark_mode(self) -> None:

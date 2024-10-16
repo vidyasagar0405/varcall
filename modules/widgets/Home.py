@@ -3,7 +3,7 @@ from textual.containers import Container, Horizontal
 from textual.validation import Number
 from textual.widgets import Button, Input, Label, LoadingIndicator, Select, Static
 
-from modules.exec_func.common_funcs import file_suggester
+from modules.exec.common  import file_suggester
 
 
 class HomeWidgets(Static):

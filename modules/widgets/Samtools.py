@@ -1,8 +1,8 @@
 from textual.app import ComposeResult
 from textual.widgets import Button, Input, Label, Static
 from textual.containers import Container, Horizontal
-from modules.exec_func.samtools_funcs import *  # noqa: F403
-from modules.exec_func.common_funcs import file_suggester
+from modules.exec.samtools  import *  # noqa: F403
+from modules.exec.common  import file_suggester
 from modules.logging import setup_logging
 
 setup_logging()
