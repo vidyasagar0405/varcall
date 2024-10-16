@@ -65,7 +65,7 @@ class Varcall(App[None]):
         footer, and tabbed content for different functionalities.
         """
         with ScrollableContainer(id="ScrollableContainer"):
-            yield Header(show_clock=True)
+            yield Header()
             yield Footer(show_command_palette=True)
             with TabbedContent():
                 with TabPane("Home", id="HomeTab"):
