@@ -168,8 +168,9 @@ trial/
 trail/
 clean.sh
 excali*/
-nohup.out
 
+results/
+nohup.out
 snapshot_report.html
 
 #local backups
