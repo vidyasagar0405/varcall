@@ -186,7 +186,7 @@ class Varcall(App[None]):
         run_bwa_index(self)  # noqa: F405
 
     # Event handler for BWA align button press
-    @on(Button.Pressed, "#bwa_align_Button")
+    @on(Button.Pressed, "#bwa_mem_Button")
     def call_run_bwa_mem(self) -> None:
         """
         Initiates the BWA MEM process when the BWA align button is pressed.
@@ -234,7 +234,7 @@ class Varcall(App[None]):
     def view_bwa_res(self) -> None:
         """
         This method is triggered when the view bwa results button is pressed.
-        Executes flagstat_bam() and multiqc on the result file and then,
+        Executes flagstats_bam() and multiqc on the result file and then,
         Opens the it in a web browser.
         """
 

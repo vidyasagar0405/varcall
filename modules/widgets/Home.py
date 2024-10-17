@@ -55,7 +55,7 @@ class HomeWidgets(Static):
 
             with Horizontal(id="MultiQC_Horizontal"):
                 yield Label(
-                    "MultiQCs the files in the workingdir/results/fastqc directory [u]if the input field is left empty[/u] \n[bold red]NOTE[/bold red]: MultiQC can be used to visualise the output of various tools like samtools flagstat.\nFor more info check this",
+                    "MultiQCs the files in the workingdir/results/fastqc directory [u]if the input field is left empty[/u] \n[bold red]NOTE[/bold red]: MultiQC can be used to visualise the output of various tools like samtools flagstats.\nFor more info check this",
                     id="bwa_description",
                 )
                 yield Button("MultiQC", id="MultiQC_Button", classes="action_buttons")
@@ -81,6 +81,6 @@ class HomeWidgets(Static):
                     id="bwa_description",
                 )
                 yield Button("Index", id="bwa_index_Button", classes="action_buttons")
-                yield Button("Align", id="bwa_align_Button", classes="action_buttons")
+                yield Button("Align", id="bwa_mem_Button", classes="action_buttons")
                 yield Button("View Results", id="view_bwa_res")
                 yield LoadingIndicator(id="bwa_Loading")

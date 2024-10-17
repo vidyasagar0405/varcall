@@ -184,16 +184,16 @@ def _run_samtools_index(self, input_file):
 
 
 
-# 4. samtools flagstat equivalent in pysam
-def flagstat_bam(input_file, out_file):
+# 4. samtools flagstats equivalent in pysam
+def flagstats_bam(input_file, out_file):
     """
-    The flagstat_bam function generates a summary of alignment statistics
+    The flagstats_bam function generates a summary of alignment statistics
     for the input BAM file, such as total number of reads, mapped reads,
     and properly paired reads.
-    This is equivalent to `samtools flagstat` and is useful for assessing
+    This is equivalent to `samtools flagstats` and is useful for assessing
     the quality of alignments.
     """
-    stats = pysam.flagstat(input_file)
+    stats = pysam.flagstats(input_file)
     out_file = Path(out_file)
     out_file.touch(exist_ok=True)
     with open(out_file, "w") as outfile:

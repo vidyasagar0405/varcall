@@ -70,7 +70,7 @@ class Command:
             # filter → third_input
 
             "bwa_mem": f"bwa mem -t {self.third_input} {self.input_path} {self.fourth_input} {self.fifth_input} -o {self.output_path}",
-            "multiqc_flagstat": f"multiqc {self.third_input}/results/sam/aligned.sam.flagstat -o {self.third_input}/results/multiqc/sam",
+            "multiqc_flagstats": f"multiqc {self.third_input}/results/sam/aligned.sam.flagstats > {self.third_input}/results/multiqc/sam",
             "samtools_sort": f"samtools sort {self.input_path} -o {self.output_path}",
             "samtools_view": f"samtools view -b -h {self.input_path} -o {self.output_path} region={self.third_input}",
             "samtools_index": f"samtools index {self.input_path}",

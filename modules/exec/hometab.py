@@ -3,7 +3,7 @@ import threading
 import subprocess
 import logging
 from modules.logging import setup_logging
-from modules.exec.samtools  import flagstat_bam
+from modules.exec.samtools  import flagstats_bam
 from modules.exec.common  import get_input, find_matching_files
 
 setup_logging()
@@ -87,8 +87,8 @@ def run_FastQC(self):
     Args:
         self: The instance of the class calling this function.
     """
-    if not self.workingDir:
-        self.workingDir = __file__
+    # if not self.workingDir:
+    #     self.workingDir = __file__
     input_path = get_input(self, "FastQC_input_input")
     output_path = get_input(self, "FastQC_output_input")
 
@@ -367,12 +367,12 @@ def _run_bwa_mem(
             title="bwa mem",
         )
 
-        flagstat_bam(
+        flagstats_bam(
             f"{self.workingDir}/results/sam/aligned.sam",
-            f"{self.workingDir}/results/sam/aligned.sam.flagstat",
+            f"{self.workingDir}/results/sam/aligned.sam.flagstats",
         )
 
-        MultiQC_cmd = f"multiqc {self.workingDir}/results/sam/aligned.sam.flagstat -o {self.workingDir}/results/multiqc/sam"
+        MultiQC_cmd = f"multiqc {self.workingDir}/results/sam/aligned.sam.flagstats -o {self.workingDir}/results/multiqc/sam"
         subprocess.run(
             [MultiQC_cmd],
             check=True,
