@@ -164,8 +164,8 @@ cython_debug/
 #log files
 master_log.log
 Rail/
-trial/
-trail/
+*trial/
+*trail/
 clean.sh
 excali*/
 
