@@ -10,10 +10,6 @@ from modules.exec.common  import get_input
 
 setup_logging()
 
-def get_basename_and_ext(path) -> tuple:
-    filename = os.path.splitext(os.path.basename(path))
-    return filename
-
 async def run_samtools_sort(self):
     if not self.workingDir:
         self.workingDir = __file__

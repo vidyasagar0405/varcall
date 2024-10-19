@@ -29,18 +29,6 @@ class TestCommand(unittest.TestCase):
         )
         self.assertEqual(commands, expected)
 
-    def test_multiqc_flagstats_cmd(self):
-        cmd = Command(
-            name="multiqc_flagstats",
-            input_path="",
-            third_input="/project/dir"  # Working directory
-        )
-        commands = cmd.get_command()
-        expected = (
-            "multiqc /project/dir/results/sam/aligned.sam.flagstats -o /project/dir/results/multiqc/sam"
-        )
-        self.assertEqual(commands, expected)
-
     def test_samtools_view_cmd(self):
         cmd = Command(
             name="samtools_view",

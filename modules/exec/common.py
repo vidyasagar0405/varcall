@@ -1,14 +1,15 @@
-from textual.widgets import Input
-from textual.suggester import Suggester
-from pathlib import Path
 import glob
-# from ...src.main import Varcall
+import os.path
 
+# from ...src.main import Varcall
 import logging
 import subprocess
 import threading
+from pathlib import Path
 
 from modules.logging import setup_logging
+from textual.suggester import Suggester
+from textual.widgets import Input
 
 setup_logging()
 
@@ -29,6 +30,17 @@ class FileSuggester(Suggester):
 
 
 file_suggester = FileSuggester(use_cache=False, case_sensitive=True)
+
+
+def get_basename_and_ext(path) -> tuple:
+    """returns a tuple with basename and extension (has only two elements) e.g: ("basename", ".ext")
+    returns ("", "") if input is false"""
+    filename = os.path.splitext(os.path.basename(path))
+    return filename
+
+def get_file_extension(path) -> str:
+    filename = os.path.splitext(os.path.basename(path))
+    return filename[-1]
 
 
 def find_matching_files(path_pattern: str) -> str:
@@ -70,7 +82,6 @@ class Command:
             # filter → third_input
 
             "bwa_mem": f"bwa mem -t {self.third_input} {self.input_path} {self.fourth_input} {self.fifth_input} -o {self.output_path}",
-            "multiqc_flagstats": f"multiqc {self.third_input}/results/sam/aligned.sam.flagstats > {self.third_input}/results/multiqc/sam",
             "samtools_sort": f"samtools sort {self.input_path} -o {self.output_path}",
             "samtools_view": f"samtools view -b -h {self.input_path} -o {self.output_path} region={self.third_input}",
             "samtools_index": f"samtools index {self.input_path}",

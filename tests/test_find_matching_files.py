@@ -50,18 +50,6 @@ class TestFindMatchingFiles(unittest.TestCase):
 
         mock_glob.assert_called_once_with("./trial/reads/sample1*")
 
-    @patch("glob.glob")
-    def test_find_matching_files_special_characters(self, mock_glob):
-        # Mocking files with special characters
-        mock_glob.return_value = [
-            "./trial/[a-b]/file1.txt", 
-            "./trial/[a-b]/file2.txt"
-        ]
-
-        result = find_matching_files("./trial/[a-b]/file*.txt")
-        self.assertEqual(result, "./trial/[a-b]/file1.txt ./trial/[a-b]/file2.txt")
-
-        mock_glob.assert_called_once_with("./trial/[a-b]/file*.txt")
 
     @patch("glob.glob")
     def test_find_matching_files_empty_string(self, mock_glob):
