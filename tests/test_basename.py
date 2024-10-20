@@ -1,5 +1,5 @@
 import unittest
-from modules.exec.common import get_basename_and_ext, get_file_extension
+from src.varcall.modules.exec.common import get_basename_and_ext, get_file_extension
 
 class TestBasename(unittest.TestCase):
 

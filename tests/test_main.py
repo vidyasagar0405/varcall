@@ -2,7 +2,7 @@ import os
 import filecmp
 import unittest
 import pytest
-from src import Varcall
+from src.varcall.main import Varcall
 from textual.pilot import Pilot
 
 app = Varcall()

@@ -1,5 +1,5 @@
 import unittest
-from modules.exec.common import Command
+from src.varcall.modules.exec.common import Command
 
 class TestCommand(unittest.TestCase):
     def test_download_cmd(self):
