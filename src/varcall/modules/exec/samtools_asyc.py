@@ -1,4 +1,3 @@
-import os.path
 import pysam
 from pysam.utils import SamtoolsError
 import asyncio
@@ -6,7 +5,7 @@ import threading
 import logging
 from modules.logging import setup_logging
 from pathlib import Path
-from modules.exec.common  import get_input
+from modules.exec.common  import get_input, get_basename_and_ext
 
 setup_logging()
 

@@ -1,4 +1,5 @@
 import glob
+from datetime import datetime
 import os.path
 
 # from ...src.main import Varcall
@@ -12,6 +13,68 @@ from textual.suggester import Suggester
 from textual.widgets import Input
 
 setup_logging()
+
+
+def get_random_file_name_current(ext:str) -> str:
+
+    now = datetime.now()
+    date_time = now.strftime("%H%M_%d%m%Y")
+    path = os.getcwd()
+    path = f"{path}/{date_time}.{ext}"
+
+    return path
+
+def default_file_name(self, tool:str, input:str , has_cwd_set: bool) -> str:
+
+    input_path_tuple = get_basename_and_ext(input)
+    f"{input_path_tuple[0]}.sorted{input_path_tuple[1]}"
+
+    if has_cwd_set:
+        path = self.workingDir
+
+    path = os.getcwd()
+    now = datetime.now()
+    date_time = now.strftime("%H%M_%d%m%Y")
+
+    match tool:
+        case "download":
+            return f"{path}/{date_time}.download"
+
+        case "fastqc":
+            return path+"results/fastqc/"
+        case "multiqc":
+            return path+f"results/multiqc{date_time}/"
+            
+        case "bwa_index":
+            return path+"data/reference/"
+        case "bwa_mem":
+            return path+f"results/sam/aligned{date_time}.sam"
+
+        case "samtools_sort":
+            return path+f"results/sam/aligned{date_time}.sorted.sam"
+        case "samtools_view":
+            return path+f"results/bam/aligned{date_time}.bam"
+        case "samtools_index":
+            return path+"results/sam/"
+
+        case "bcf_call":
+            return path+f"results/bcf/{date_time}.call.bcf"
+        case "bcf_filter":
+            return path+f"results/multiqc/"
+        case "bcf_norm":
+            return path+f"results/multiqc/"
+        case "bcf_stats":
+            return path+f"results/multiqc/"
+
+
+    return path
+
+def get_output_name(self, tool: str, input) -> str:
+    if not self.workingDir:
+        return default_file_name(self, tool, input, True)
+    else:
+        return default_file_name(self, tool, input, False)
+
 
 
 class FileSuggester(Suggester):
@@ -53,15 +116,15 @@ def get_input(self, input_widget_id) -> str:
     try:
         raw_input = str(self.query_one(f"#{input_widget_id}", Input).value).strip()
         return find_matching_files(raw_input)
-    except:
+    except Exception:
         return ""
 
 
 class Command:
-    def __init__(self, name: str, input_path: str, output_path: str = "", third_input: str = "", fourth_input: str = "", fifth_input = None) -> None:
+    def __init__(self, name: str, first_path: str, second_path: str = "", third_input: str = "", fourth_input: str = "", fifth_input = None) -> None:
         self.name = name
-        self.input_path = input_path
-        self.output_path = output_path
+        self.first_path = first_path
+        self.second_path = second_path
         self.third_input = third_input
         self.fourth_input = fourth_input
         self.fifth_input = fifth_input
@@ -70,50 +133,53 @@ class Command:
     # Generate commands dynamically based on instance variables
         commands = {
             
-            "download": f"curl -L {self.input_path} -o {self.output_path}",
-            "fastqc": f"fastqc {self.input_path} -o {self.output_path}",
-            "multiqc": f"multiqc {self.input_path} -o {self.output_path}",
-            "bwa_index": f"bwa index {self.input_path}",
+            "download": f"curl -L {self.first_path} -o {self.second_path or get_output_name(self, "download", self.first_path)}",
 
-            # no_of_threads → third_input
-            # ref_path → fourth_input
-            # read_path_2 → fifth_input
-            # view_region → third_input
-            # filter → third_input
+            "fastqc": f"fastqc {self.first_path} -o {self.second_path or get_output_name(self, "fastqc", self.first_path)}",
+            "multiqc": f"multiqc {self.first_path} -o {self.second_path or get_output_name(self, "multiqc", self.first_path)}",
 
-            "bwa_mem": f"bwa mem -t {self.third_input} {self.input_path} {self.fourth_input} {self.fifth_input} -o {self.output_path}",
-            "samtools_sort": f"samtools sort {self.input_path} -o {self.output_path}",
-            "samtools_view": f"samtools view -b -h {self.input_path} -o {self.output_path} region={self.third_input}",
-            "samtools_index": f"samtools index {self.input_path}",
-            "bcf_call": f"bcftools call -mv -Oz -o {self.output_path} {self.input_path}",
-            "bcf_filter": f"bcftools filter -s LOWQUAL -e '{self.third_input}' {self.input_path} -o {self.output_path}",
-            "bcf_norm": f"bcftools norm -f {self.input_path} {self.output_path}",
-            "bcf_stats": f"bcftools stats {self.input_path} > {self.output_path}"
+            "bwa_index": f"bwa index {self.first_path or get_output_name(self, "bwa_index", self.first_path)}",
+            "bwa_mem": f"bwa mem -t {self.second_path or 4} {self.first_path} {self.third_input} {self.fourth_input} -o {self.fifth_input or get_output_name(self, "bwa_mem", self.first_path)}",
+
+            "samtools_sort": f"samtools sort {self.first_path} -o {self.second_path or get_output_name(self, "samtools_sort", self.first_path)}",
+            "samtools_view": f"samtools view -b -h {self.first_path} -o {self.second_path or get_output_name(self, "samtools_view", self.first_path)} region={self.third_input}",
+            "samtools_index": f"samtools index {self.first_path or get_output_name(self, "samtools_index", self.first_path)}",
+
+            "bcf_call": f"bcftools call -mv -Oz -o {self.second_path or get_output_name(self, "bcf_call", self.first_path)} {self.first_path}",
+            "bcf_filter": f"bcftools filter -s LOWQUAL -e '{self.third_input}' {self.first_path} -o {self.second_path or get_output_name(self, "bcf_filter", self.first_path)}",
+            "bcf_norm": f"bcftools norm -f {self.first_path} {self.second_path or get_output_name(self, "bcf_norm", self.first_path)}",
+            "bcf_stats": f"bcftools stats {self.first_path} > {self.second_path or get_output_name(self, "bcf_stats", self.first_path)}"
         }
         return commands.get(self.name, f"Error: '{self.name}' command not found.")
 
 
 
 
-def run_command(self, name: str, input_path: str, output_path: str = "", third_input: str = "", fourth_input: str = "", fifth_input = None):
-    """ """
-    input_path = get_input(self, "bcf_call_input_input")
-    output_path = get_input(self, "bcf_call_output_input")
-    if not input_path:
-        self.notify(
-            "Please provide a valid path", severity="warning", title="Samtools view"
-        )
-        return
-    if not output_path:
-        self.notify(
-            "Please provide a valid path", severity="warning", title="Samtools view"
-        )
+def run_command(self, name: str, first_path : str, second_path : str = "", third_input: str = "", fourth_input: str = "", fifth_input: str = ""):
+
+    _name = name.replace(" ", "_")
+
+    first_path = get_input(self, f"{_name}_first_path")
+    second_path = get_input(self, f"{_name}_second_path")
+    third_input = get_input(self, f"{_name}_third_input")
+    fourth_inpu  = get_input(self, f"{_name}_fourth_inpu")
+    fifth_input = get_input(self, f"{_name}_fifth_input")
+
+    if not first_path and (name != "fastqc" or "multiqc"):
+        self.notify( "Please provide a valid path", severity="warning", title=name)
         return
 
-    self.notify(f"bcf call {str(input_path)}...", title="bcf call")
-    logging.info(f"bcf call {str(input_path)}...")
-    self.query_one("#bcf_call_horizontal").add_class("running")
-    bcf_call_cmd = f"bcftools call -mv -Oz -o {output_path} {input_path}"
+    self.notify(f"{name} {str(first_path )}...", title=name)
+    logging.info(f"{name} {str(first_path )}...")
+    self.query_one(f"#{_name}_horizontal").add_class("running")
+    cmd = Command(
+        name,
+        first_path,
+        second_path,
+        third_input,
+        fourth_input,
+        fifth_input,
+    ).get_command()
     threading.Thread(
         target=_run_command,
         args=(
