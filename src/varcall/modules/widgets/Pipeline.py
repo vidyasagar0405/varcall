@@ -1,6 +1,8 @@
-from textual.app import ComposeResult, on
-from textual.widgets import Button, Label, Static, Input
+from textual import on
+from textual.app import ComposeResult
 from textual.containers import Vertical
+from textual.widgets import Button, Input, Label, Static
+
 
 class PipelineWidgets(Static):
     def compose(self) -> ComposeResult:

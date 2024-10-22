@@ -21,8 +21,7 @@ async def run_samtools_sort(self):
 
     if not output_path:
         input_path_tuple = get_basename_and_ext(input_path)
-        last = len(input_path_tuple)-1
-        output_path = f"{input_path_tuple[0]}.sorted{input_path_tuple[last]}"
+        output_path = f"{input_path_tuple[0]}.sorted{input_path_tuple[1]}"
 
     self.notify(f"Samtools sort {str(input_path)} to {str(output_path)} ...", title="Samtools sort")
     logging.info(f"Samtools sort {str(input_path)} to {str(output_path)} ...")

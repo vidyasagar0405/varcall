@@ -12,31 +12,31 @@
     height: 3;
     height: auto;
 
-    #Project_name {
+    #Project_name{
         width: auto;
         margin: 1;
     }
 
-    #Input_Project_name {
+    #Input_Project_name{
         height: 3;
         border: wide $background;
         min-width: 20;
         width: auto;
     }
 
-    #Project_location {
+    #Project_location{
         margin: 1;
         width: auto;
         opacity: 60%;
     }
 }
 
-#Download_widget {
+#Download_widget{
     width: auto;
     background: $boost;
     height: 12;
     .running #Download_loading{display: block;}
-    #download_title {
+    #download_title{
         background: $panel-darken-2;
         width: 100%;
         margin: 0 0 1 0;
@@ -107,7 +107,7 @@ Container #FastQC_widget, #MultiQC_widget, #bwa_widget{
         margin: 1 1 1 2;
         width: 70%;
     }
-    #FastQC_input_input,#FastQC_output_input {
+    #FastQC_input_input,#FastQC_output_input{
         width: 49%;
     }
 }
@@ -117,7 +117,7 @@ Container #FastQC_widget, #MultiQC_widget, #bwa_widget{
         margin: 1 1 1 2;
         width: 70%;
     }
-    #MultiQC_input_input,#MultiQC_output_input {
+    #MultiQC_input_input,#MultiQC_output_input{
         width: 49%;
     }
 }
