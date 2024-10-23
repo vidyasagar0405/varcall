@@ -18,17 +18,17 @@ from textual.widgets import (
     TabPane,
 )
 
-# Importing custom modules and functions
-from modules.widgets.Bcftools import BcftoolsWidgets
-from modules.exec.bcftools import run_bcf_call, run_bcf_filter, run_bcf_mpileup, run_bcf_stats, run_bcf_norm
-from modules.exec.hometab import *  # noqa: F403
-from modules.exec.samtools import *  # noqa: F403
-from modules.Help.Help import HelpMarkdown
-from modules.widgets.Home import HomeWidgets
-from modules.logging import setup_logging
-from modules.widgets.Pipeline import PipelineWidgets
-from modules.widgets.Samtools import SamtoolsWidgets
-from modules.widgets.YesOrNo import YesOrNo
+# Importing custom varcall.modules and functions
+from varcall.modules.widgets.Bcftools import BcftoolsWidgets
+from varcall.modules.exec.bcftools import run_bcf_call, run_bcf_filter, run_bcf_mpileup, run_bcf_stats, run_bcf_norm
+from varcall.modules.exec.hometab import *  # noqa: F403
+from varcall.modules.exec.samtools import *  # noqa: F403
+from varcall.modules.Help.Help import HelpMarkdown
+from varcall.modules.widgets.Home import HomeWidgets
+from varcall.modules.logging import setup_logging
+from varcall.modules.widgets.Pipeline import PipelineWidgets
+from varcall.modules.widgets.Samtools import SamtoolsWidgets
+from varcall.modules.widgets.YesOrNo import YesOrNo
 
 # Setup logging configuration
 setup_logging()
@@ -304,7 +304,7 @@ class Varcall(App[None]):
 
     # Handels the key press for Show help action
     def action_show_help(self) -> None:
-        self.query_one(TabbedContent).active = "SamtoolsTab"
+        self.query_one(TabbedContent).active = "HelpTab"
 
     # Handels the key press for Exit application action
     def action_exit_app(self) -> None:
@@ -331,7 +331,11 @@ class Varcall(App[None]):
 
 
 # Main entry point of the application
-if __name__ == "__main__":
+def main():
     logging.info("Application started.")
     Varcall().run()
     logging.info("Application closed.")
+
+
+if __name__ == "__main__":
+    main()

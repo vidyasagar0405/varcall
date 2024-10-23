@@ -5,10 +5,10 @@ from pysam.utils import SamtoolsError
 
 import threading
 import logging
-from modules.logging import setup_logging
+from varcall.modules.logging import setup_logging
 from pathlib import Path
 
-from modules.exec.common  import get_input
+from varcall.modules.exec.common  import get_input
 
 setup_logging()
 

@@ -162,13 +162,6 @@ cython_debug/
 .idea/
 
 #log files
-master_log.log
-Rail/
-*trial/
-*trail/
-clean.sh
-excali*/
-
 results/
 nohup.out
 snapshot_report.html

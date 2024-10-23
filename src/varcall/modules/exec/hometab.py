@@ -2,9 +2,9 @@ import os
 import threading
 import subprocess
 import logging
-from modules.logging import setup_logging
-from modules.exec.samtools  import flagstats_bam
-from modules.exec.common  import get_input, find_matching_files
+from varcall.modules.logging import setup_logging
+from varcall.modules.exec.samtools  import flagstats_bam
+from varcall.modules.exec.common  import get_input, find_matching_files
 
 setup_logging()
 

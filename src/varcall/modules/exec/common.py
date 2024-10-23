@@ -8,7 +8,7 @@ import subprocess
 import threading
 from pathlib import Path
 
-from modules.logging import setup_logging
+from varcall.modules.logging import setup_logging
 from textual.suggester import Suggester
 from textual.widgets import Input
 
@@ -121,8 +121,9 @@ def get_input(self, input_widget_id) -> str:
 
 
 class Command:
-    def __init__(self, name: str, first_path: str, second_path: str = "", third_input: str = "", fourth_input: str = "", fifth_input = None) -> None:
+    def __init__(self, workingDir: str, name: str, first_path: str, second_path: str = "", third_input: str = "", fourth_input: str = "", fifth_input = None) -> None:
         self.name = name
+        self.workingDir = workingDir
         self.first_path = first_path
         self.second_path = second_path
         self.third_input = third_input
@@ -165,7 +166,7 @@ def run_command(self, name: str, first_path : str, second_path : str = "", third
     fourth_inpu  = get_input(self, f"{_name}_fourth_inpu")
     fifth_input = get_input(self, f"{_name}_fifth_input")
 
-    if not first_path and (name != "fastqc" or "multiqc"):
+    if not first_path and (name != "fastqc" or "multiqc" or "bwa_index"):
         self.notify( "Please provide a valid path", severity="warning", title=name)
         return
 

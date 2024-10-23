@@ -4,19 +4,61 @@ build-backend = "hatchling.build"
 
 [project]
 name = "varcall"
-version = "0.0.1"
-authors = [
-  { name="Vidyasagar", email="vidyasagar0405.com" },
-]
-description = "a variant calling tui wrapper"
+dynamic = ["version"]
+description = 'A beginner friendly TUI tool for variant calling'
 readme = "README.md"
 requires-python = ">=3.8"
-classifiers = [
-    "Programming Language :: Python :: 3",
-    "License :: OSI Approved :: MIT License",
-    "Operating System :: OS Independent",
+license = "MIT"
+keywords = []
+authors = [
+  { name = "vidyasagar0405", email = "vidyasagar0405@gmail.com" },
 ]
+classifiers = [
+  "Development Status :: 2 - Pre-Alpha",
+  "Programming Language :: Python",
+  "Programming Language :: Python :: 3.8",
+  "Programming Language :: Python :: 3.9",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: Implementation :: CPython",
+  "Programming Language :: Python :: Implementation :: PyPy",
+]
+dependencies = ["textual", "pysam"]
 
 [project.urls]
-Homepage = "https://github.com/vidyasagar0405/varcall"
+Documentation = "https://github.com/vidyasagar0405/varcall#readme"
 Issues = "https://github.com/vidyasagar0405/varcall/issues"
+Source = "https://github.com/vidyasagar0405/varcall"
+
+[tool.hatch.version]
+path = "src/varcall/__about__.py"
+
+[tool.hatch.envs.types]
+extra-dependencies = [
+  "mypy>=1.0.0",
+]
+[tool.hatch.envs.types.scripts]
+check = "mypy --install-types --non-interactive {args:src/varcall tests}"
+
+[tool.coverage.run]
+source_pkgs = ["varcall", "tests"]
+branch = true
+parallel = true
+omit = [
+  "src/varcall/__about__.py",
+]
+
+[tool.coverage.paths]
+varcall = ["src/varcall", "*/varcall/src/varcall"]
+tests = ["tests", "*/varcall/tests"]
+
+[tool.coverage.report]
+exclude_lines = [
+  "no cov",
+  "if __name__ == .__main__.:",
+  "if TYPE_CHECKING:",
+]
+
+[project.scripts]
+varcall = "varcall.main:main"

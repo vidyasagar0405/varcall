@@ -1,15 +1,15 @@
 import unittest
-from src.varcall.modules.exec.common import Command
+from varcall.modules.exec.common import Command
 
 class TestCommand(unittest.TestCase):
     def test_download_cmd(self):
-        cmd = Command(name="download", first_path="https://example.com/file.txt", second_path="file.txt")
+        cmd = Command(name="download", workingDir = "trial", first_path="https://example.com/file.txt", second_path="file.txt")
         commands = cmd.get_command()
         expected = "curl -L https://example.com/file.txt -o file.txt"
         self.assertEqual(commands, expected)
 
     def test_fastqc_cmd(self):
-        cmd = Command(name="fastqc", first_path="sample.fastq", second_path="results/")
+        cmd = Command(name="fastqc", workingDir = "trial", first_path="sample.fastq", second_path="results/")
         commands = cmd.get_command()
         expected = "fastqc sample.fastq -o results/"
         self.assertEqual(commands, expected)
@@ -17,11 +17,12 @@ class TestCommand(unittest.TestCase):
     def test_bwa_mem_cmd(self):
         cmd = Command(
             name="bwa_mem",
+            workingDir = "trial",
             first_path="ref_genome.fa",
-            second_path="aligned.sam",
-            third_input="8",  # Number of threads
-            fourth_input="reads_1.fastq",  # Reference genome
-            fifth_input="reads_2.fastq"  # Second read
+            second_path="8",
+            third_input="reads_1.fastq",
+            fourth_input="reads_2.fastq",
+            fifth_input="aligned.sam"
         )
         commands = cmd.get_command()
         expected = (
@@ -32,6 +33,7 @@ class TestCommand(unittest.TestCase):
     def test_samtools_view_cmd(self):
         cmd = Command(
             name="samtools_view",
+            workingDir = "trial",
             first_path="input.bam",
             second_path="output.sam",
             third_input="chr1:1000-2000"  # Region to view
@@ -43,6 +45,7 @@ class TestCommand(unittest.TestCase):
     def test_bcf_filter_cmd(self):
         cmd = Command(
             name="bcf_filter",
+            workingDir = "trial",
             first_path="variants.bcf",
             second_path="filtered.bcf",
             third_input="QUAL<20"  # Filter expression
@@ -52,13 +55,13 @@ class TestCommand(unittest.TestCase):
         self.assertEqual(commands, expected)
 
     def test_bcf_stats_cmd(self):
-        cmd = Command(name="bcf_stats", first_path="variants.bcf", second_path="stats.txt")
+        cmd = Command(name="bcf_stats", workingDir = "trial", first_path="variants.bcf", second_path="stats.txt")
         commands = cmd.get_command()
         expected = "bcftools stats variants.bcf > stats.txt"
         self.assertEqual(commands, expected)
 
     def test_error(self):
-        cmd = Command(name="no_cmd", first_path="no_input", second_path="no_output")
+        cmd = Command(name="no_cmd", workingDir = "trial", first_path="no_input", second_path="no_output")
         commands = cmd.get_command()
         expected = "Error: 'no_cmd' command not found."
         self.assertEqual(commands, expected)

@@ -2,8 +2,8 @@ import logging
 import subprocess
 import threading
 
-from modules.exec.common  import get_input
-from modules.logging import setup_logging
+from varcall.modules.exec.common  import get_input
+from varcall.modules.logging import setup_logging
 
 setup_logging()
 
