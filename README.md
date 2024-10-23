@@ -33,23 +33,23 @@ conda create -n varcall -y
 conda install -c bioconda fastqc multiqc bwa samtools bcftools
 ```
 
-![Home tab image](https://github.com/vidyasagar0405/varcall/raw/main/doc/images/Hometab-image.jpg?raw=true "Home tab")
+![Home tab image](./doc/images/Hometab-image.jpg?raw=true "Home tab")
 
 
 
-![Samtools tab image](https://github.com/vidyasagar0405/varcall/raw/main/doc/images/Samtoolstab-image.jpg?raw=true "Samtools tab")
+![Samtools tab image](./doc/images/Samtoolstab-image.jpg?raw=true "Samtools tab")
 
 
 
-![Bcftools tab image](https://github.com/vidyasagar0405/varcall/raw/main/doc/images/Bcftoolstab-image.jpg?raw=true "Bcftools tab")
+![Bcftools tab image](./doc/images/Bcftoolstab-image.jpg?raw=true "Bcftools tab")
 
 
 
-![Pipeline tab image](https://github.com/vidyasagar0405/varcall/raw/main/doc/images/Pipelinetab-image.jpg?raw=true "Pipeline")
+![Pipeline tab image](./doc/images/Pipelinetab-image.jpg?raw=true "Pipeline")
 
 
 
-![Help tab image](https://github.com/vidyasagar0405/varcall/raw/main/doc/images/Helptab-image.jpg?raw=true "Help tab")
+![Help tab image](./doc/images/Helptab-image.jpg?raw=true "Help tab")
 
 ## License
 
