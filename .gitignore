@@ -162,6 +162,9 @@ cython_debug/
 .idea/
 
 #log files
+trial
+trila
+trail
 results/
 nohup.out
 snapshot_report.html
@@ -169,5 +172,3 @@ snapshot_report.html
 #local backups
 
 .bak
-
-notes.md
