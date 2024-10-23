@@ -163,7 +163,7 @@ def run_command(self, name: str, first_path : str, second_path : str = "", third
     first_path = get_input(self, f"{_name}_first_path")
     second_path = get_input(self, f"{_name}_second_path")
     third_input = get_input(self, f"{_name}_third_input")
-    fourth_inpu  = get_input(self, f"{_name}_fourth_inpu")
+    fourth_input  = get_input(self, f"{_name}_fourth_inpu")
     fifth_input = get_input(self, f"{_name}_fifth_input")
 
     if not first_path and (name != "fastqc" or "multiqc" or "bwa_index"):
