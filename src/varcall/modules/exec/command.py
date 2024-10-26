@@ -1,127 +1,15 @@
-import glob
-from datetime import datetime
-import os.path
-
-# from ...src.main import Varcall
 import logging
 import subprocess
 import threading
-from pathlib import Path
-
 from varcall.modules.logging import setup_logging
-from textual.suggester import Suggester
-from textual.widgets import Input
+from varcall.modules.exec.utils import get_input, get_output_name
+
 
 setup_logging()
 
-
-def get_random_file_name_current(ext:str) -> str:
-
-    now = datetime.now()
-    date_time = now.strftime("%H%M_%d%m%Y")
-    path = os.getcwd()
-    path = f"{path}/{date_time}.{ext}"
-
-    return path
-
-def default_file_name(self, tool:str, input:str , has_cwd_set: bool) -> str:
-
-    input_path_tuple = get_basename_and_ext(input)
-    f"{input_path_tuple[0]}.sorted{input_path_tuple[1]}"
-
-    if has_cwd_set:
-        path = self.workingDir
-
-    path = os.getcwd()
-    now = datetime.now()
-    date_time = now.strftime("%H%M_%d%m%Y")
-
-    match tool:
-        case "download":
-            return f"{path}/{date_time}.download"
-
-        case "fastqc":
-            return path+"results/fastqc/"
-        case "multiqc":
-            return path+f"results/multiqc{date_time}/"
-            
-        case "bwa_index":
-            return path+"data/reference/"
-        case "bwa_mem":
-            return path+f"results/sam/aligned{date_time}.sam"
-
-        case "samtools_sort":
-            return path+f"results/sam/aligned{date_time}.sorted.sam"
-        case "samtools_view":
-            return path+f"results/bam/aligned{date_time}.bam"
-        case "samtools_index":
-            return path+"results/sam/"
-
-        case "bcf_call":
-            return path+f"results/bcf/{date_time}.call.bcf"
-        case "bcf_filter":
-            return path+f"results/multiqc/"
-        case "bcf_norm":
-            return path+f"results/multiqc/"
-        case "bcf_stats":
-            return path+f"results/multiqc/"
-
-
-    return path
-
-def get_output_name(self, tool: str, input) -> str:
-    if not self.workingDir:
-        return default_file_name(self, tool, input, True)
-    else:
-        return default_file_name(self, tool, input, False)
-
-
-
-class FileSuggester(Suggester):
-    async def get_suggestion(self, value: str) -> str | None:
-        """
-        Provides file path suggestions based on the input value.
-        """
-        # Handle absolute paths
-        if value.startswith("/"):
-            return " "
-        # Handle invalid pattern '**' anywhere in the input
-        if "**" in value:
-            return " "
-        path = next(Path().glob(f"{value}*"), None)
-        return str(path) if path else None
-
-
-file_suggester = FileSuggester(use_cache=False, case_sensitive=True)
-
-
-def get_basename_and_ext(path) -> tuple:
-    """returns a tuple with basename and extension (has only two elements) e.g: ("basename", ".ext")
-    returns ("", "") if input is false"""
-    filename = os.path.splitext(os.path.basename(path))
-    return filename
-
-def get_file_extension(path) -> str:
-    filename = os.path.splitext(os.path.basename(path))
-    return filename[-1]
-
-
-def find_matching_files(path_pattern: str) -> str:
-    """Find all files matching the given wildcard path pattern."""
-    matching_files = glob.glob(path_pattern)
-    return " ".join(matching_files)
-
-
-def get_input(self, input_widget_id) -> str:
-    try:
-        raw_input = str(self.query_one(f"#{input_widget_id}", Input).value).strip()
-        return find_matching_files(raw_input)
-    except Exception:
-        return ""
-
-
 class Command:
     def __init__(self, workingDir: str, name: str, first_path: str, second_path: str = "", third_input: str = "", fourth_input: str = "", fifth_input = None) -> None:
+        # super().__init__()
         self.name = name
         self.workingDir = workingDir
         self.first_path = first_path
@@ -133,7 +21,7 @@ class Command:
     def get_command(self) -> str:
     # Generate commands dynamically based on instance variables
         commands = {
-            
+
             "download": f"curl -L {self.first_path} -o {self.second_path or get_output_name(self, "download", self.first_path)}",
 
             "fastqc": f"fastqc {self.first_path} -o {self.second_path or get_output_name(self, "fastqc", self.first_path)}",
@@ -156,9 +44,9 @@ class Command:
 
 
 
-def run_command(self, name: str, first_path : str, second_path : str = "", third_input: str = "", fourth_input: str = "", fifth_input: str = ""):
+def run_command(self, Command: Command):
 
-    _name = name.replace(" ", "_")
+    _name = Command.name.replace(" ", "_")
 
     first_path = get_input(self, f"{_name}_first_path")
     second_path = get_input(self, f"{_name}_second_path")
@@ -166,15 +54,15 @@ def run_command(self, name: str, first_path : str, second_path : str = "", third
     fourth_input  = get_input(self, f"{_name}_fourth_inpu")
     fifth_input = get_input(self, f"{_name}_fifth_input")
 
-    if not first_path and (name != "fastqc" or "multiqc" or "bwa_index"):
-        self.notify( "Please provide a valid path", severity="warning", title=name)
+    if not first_path and (Command.name != ("fastqc" or "multiqc" or "bwa_index")):
+        self.notify( "Please provide a valid path", severity="warning", title=Command.name)
         return
 
-    self.notify(f"{name} {str(first_path )}...", title=name)
-    logging.info(f"{name} {str(first_path )}...")
+    self.notify(f"{Command.name} {str(first_path )}...", title=Command.name)
+    logging.info(f"{Command.name} {str(first_path )}...")
     self.query_one(f"#{_name}_horizontal").add_class("running")
     cmd = Command(
-        name,
+        Command.name,
         first_path,
         second_path,
         third_input,
@@ -186,7 +74,7 @@ def run_command(self, name: str, first_path : str, second_path : str = "", third
         args=(
             self,
             cmd,
-            name,
+            Command.name,
         ),
     ).start()
 
@@ -217,3 +105,4 @@ def _run_command(self, cmd: str, name:str) -> None:
 
     finally:
         self.query_one(f"#{_name}_horizontal").remove_class("running")
+
