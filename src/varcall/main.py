@@ -20,6 +20,9 @@ from textual.widgets import (
 
 # Importing custom varcall.modules and functions
 from varcall.modules.widgets.Bcftools import BcftoolsWidgets
+from varcall.modules.exec.bcftools import run_bcf_call, run_bcf_filter, run_bcf_mpileup, run_bcf_stats, run_bcf_norm
+from varcall.modules.exec.hometab import *  # noqa: F403
+from varcall.modules.exec.samtools import *  # noqa: F403
 from varcall.modules.Help.Help import HelpMarkdown
 from varcall.modules.widgets.Home import HomeWidgets
 from varcall.modules.logging import setup_logging
