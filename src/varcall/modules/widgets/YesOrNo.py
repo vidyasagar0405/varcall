@@ -39,6 +39,8 @@ class YesOrNo(ModalScreen):
         self.Title = Title
         super().__init__()
 
+    # def __call__(self, title:str, callback):
+
     def compose(self) -> ComposeResult:
         with Container(id="yesorno"):
             yield Label(self.Title)
@@ -49,3 +51,4 @@ class YesOrNo(ModalScreen):
     @on(Button.Pressed)
     def close_modalscreen(self, event: Button.Pressed) -> None:
         self.dismiss(event.button.id == "yes")
+        self.dismiss(event.button.id == "no")
