@@ -2,7 +2,6 @@ import glob
 from datetime import datetime
 import os.path
 
-# from ...src.main import Varcall
 import logging
 import subprocess
 import threading
@@ -15,7 +14,7 @@ from textual.widgets import Input
 setup_logging()
 
 
-def get_random_file_name_current(ext:str) -> str:
+def get_random_file_name_current(ext: str) -> str:
 
     now = datetime.now()
     date_time = now.strftime("%H%M_%d%m%Y")
@@ -24,57 +23,41 @@ def get_random_file_name_current(ext:str) -> str:
 
     return path
 
-def default_file_name(self, tool:str, input:str , has_cwd_set: bool) -> str:
 
-    input_path_tuple = get_basename_and_ext(input)
-    f"{input_path_tuple[0]}.sorted{input_path_tuple[1]}"
+def default_file_name(self, tool: str, input: str, has_cwd_set: bool) -> str:
+
+    input_cwd_path_tuple = get_basename_and_ext(input)
+    f"{input_cwd_path_tuple[0]}.sorted{input_cwd_path_tuple[1]}"
 
     if has_cwd_set:
-        path = self.workingDir
+        cwd_path = self.workingDir
 
-    path = os.getcwd()
+    cwd_path = os.getcwd()
     now = datetime.now()
     date_time = now.strftime("%H%M_%d%m%Y")
 
-    match tool:
-        case "download":
-            return f"{path}/{date_time}.download"
+    default_path = {
+        "download": f"{cwd_path}/{date_time}.download",
+        "fastqc": f"{cwd_path}results/fastqc/",
+        "multiqc": f"{cwd_path}results/multiqc{date_time}/",
+        "bwa_index": f"{cwd_path}data/reference/",
+        "bwa_mem": f"{cwd_path}results/sam/aligned{date_time}.sam",
+        "samtools_sort": f"{cwd_path}results/sam/aligned{date_time}.sorted.sam",
+        "samtools_view": f"{cwd_path}results/bam/aligned{date_time}.bam",
+        "samtools_index": f"{cwd_path}results/sam/",
+        "bcf_call": f"{cwd_path}results/bcf/{date_time}.call.bcf",
+        "bcf_filter": f"{cwd_path}results/multiqc/",
+        "bcf_norm": f"{cwd_path}results/multiqc/",
+        "bcf_stats": f"{cwd_path}results/multiqc/",
+    }
+    return default_path[tool] if True else f"Error: '{self.name}' command not found."
 
-        case "fastqc":
-            return path+"results/fastqc/"
-        case "multiqc":
-            return path+f"results/multiqc{date_time}/"
-            
-        case "bwa_index":
-            return path+"data/reference/"
-        case "bwa_mem":
-            return path+f"results/sam/aligned{date_time}.sam"
-
-        case "samtools_sort":
-            return path+f"results/sam/aligned{date_time}.sorted.sam"
-        case "samtools_view":
-            return path+f"results/bam/aligned{date_time}.bam"
-        case "samtools_index":
-            return path+"results/sam/"
-
-        case "bcf_call":
-            return path+f"results/bcf/{date_time}.call.bcf"
-        case "bcf_filter":
-            return path+f"results/multiqc/"
-        case "bcf_norm":
-            return path+f"results/multiqc/"
-        case "bcf_stats":
-            return path+f"results/multiqc/"
-
-
-    return path
 
 def get_output_name(self, tool: str, input) -> str:
     if not self.workingDir:
         return default_file_name(self, tool, input, True)
     else:
         return default_file_name(self, tool, input, False)
-
 
 
 class FileSuggester(Suggester):
@@ -101,6 +84,7 @@ def get_basename_and_ext(path) -> tuple:
     filename = os.path.splitext(os.path.basename(path))
     return filename
 
+
 def get_file_extension(path) -> str:
     filename = os.path.splitext(os.path.basename(path))
     return filename[-1]
@@ -121,7 +105,16 @@ def get_input(self, input_widget_id) -> str:
 
 
 class Command:
-    def __init__(self, workingDir: str, name: str, first_path: str, second_path: str = "", third_input: str = "", fourth_input: str = "", fifth_input = None) -> None:
+    def __init__(
+        self,
+        workingDir: str,
+        name: str,
+        first_path: str,
+        second_path: str = "",
+        third_input: str = "",
+        fourth_input: str = "",
+        fifth_input=None,
+    ) -> None:
         self.name = name
         self.workingDir = workingDir
         self.first_path = first_path
@@ -131,43 +124,44 @@ class Command:
         self.fifth_input = fifth_input
 
     def get_command(self) -> str:
-    # Generate commands dynamically based on instance variables
+        # Generate commands dynamically based on instance variables
         commands = {
-            
             "download": f"curl -L {self.first_path} -o {self.second_path or get_output_name(self, "download", self.first_path)}",
-
             "fastqc": f"fastqc {self.first_path} -o {self.second_path or get_output_name(self, "fastqc", self.first_path)}",
             "multiqc": f"multiqc {self.first_path} -o {self.second_path or get_output_name(self, "multiqc", self.first_path)}",
-
             "bwa_index": f"bwa index {self.first_path or get_output_name(self, "bwa_index", self.first_path)}",
             "bwa_mem": f"bwa mem -t {self.second_path or 4} {self.first_path} {self.third_input} {self.fourth_input} -o {self.fifth_input or get_output_name(self, "bwa_mem", self.first_path)}",
-
             "samtools_sort": f"samtools sort {self.first_path} -o {self.second_path or get_output_name(self, "samtools_sort", self.first_path)}",
             "samtools_view": f"samtools view -b -h {self.first_path} -o {self.second_path or get_output_name(self, "samtools_view", self.first_path)} region={self.third_input}",
             "samtools_index": f"samtools index {self.first_path or get_output_name(self, "samtools_index", self.first_path)}",
-
             "bcf_call": f"bcftools call -mv -Oz -o {self.second_path or get_output_name(self, "bcf_call", self.first_path)} {self.first_path}",
             "bcf_filter": f"bcftools filter -s LOWQUAL -e '{self.third_input}' {self.first_path} -o {self.second_path or get_output_name(self, "bcf_filter", self.first_path)}",
             "bcf_norm": f"bcftools norm -f {self.first_path} {self.second_path or get_output_name(self, "bcf_norm", self.first_path)}",
-            "bcf_stats": f"bcftools stats {self.first_path} > {self.second_path or get_output_name(self, "bcf_stats", self.first_path)}"
+            "bcf_stats": f"bcftools stats {self.first_path} > {self.second_path or get_output_name(self, "bcf_stats", self.first_path)}",
         }
         return commands.get(self.name, f"Error: '{self.name}' command not found.")
 
 
-
-
-def run_command(self, name: str, first_path : str, second_path : str = "", third_input: str = "", fourth_input: str = "", fifth_input: str = ""):
+def run_command(
+    self,
+    name: str,
+    first_path: str,
+    second_path: str = "",
+    third_input: str = "",
+    fourth_input: str = "",
+    fifth_input: str = "",
+):
 
     _name = name.replace(" ", "_")
 
     first_path = get_input(self, f"{_name}_first_path")
     second_path = get_input(self, f"{_name}_second_path")
     third_input = get_input(self, f"{_name}_third_input")
-    fourth_input  = get_input(self, f"{_name}_fourth_inpu")
+    fourth_input = get_input(self, f"{_name}_fourth_inpu")
     fifth_input = get_input(self, f"{_name}_fifth_input")
 
     if not first_path and (name != "fastqc" or "multiqc" or "bwa_index"):
-        self.notify( "Please provide a valid path", severity="warning", title=name)
+        self.notify("Please provide a valid path", severity="warning", title=name)
         return
 
     self.notify(f"{name} {str(first_path )}...", title=name)
@@ -191,7 +185,7 @@ def run_command(self, name: str, first_path : str, second_path : str = "", third
     ).start()
 
 
-def _run_command(self, cmd: str, name:str) -> None:
+def _run_command(self, cmd: str, name: str) -> None:
     """ """
     _name = name.replace(" ", "_")
     try:

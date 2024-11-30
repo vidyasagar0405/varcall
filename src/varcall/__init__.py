@@ -9,7 +9,7 @@ __licence__ = "MIT"
 
 ##############################################################################
 # Local imports.
-from src.varcall.main import Varcall
+from varcall.main import Varcall
 
 ##############################################################################
 # Export the imports.

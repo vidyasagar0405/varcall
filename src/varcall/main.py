@@ -7,25 +7,19 @@ from textual import on
 from textual.app import App, ComposeResult
 from textual.containers import ScrollableContainer
 from textual.reactive import reactive
-from textual.widgets import (
-    Button,
-    Footer,
-    Header,
-    Input,
-    Label,
-    Select,
-    TabbedContent,
-    TabPane,
-)
+from textual.widgets import (Button, Footer, Header, Input, Label, Select,
+                             TabbedContent, TabPane)
 
-# Importing custom varcall.modules and functions
-from varcall.modules.widgets.Bcftools import BcftoolsWidgets
-from varcall.modules.exec.bcftools import run_bcf_call, run_bcf_filter, run_bcf_mpileup, run_bcf_stats, run_bcf_norm
+from varcall.modules.exec.bcftools import (run_bcf_call, run_bcf_filter,
+                                           run_bcf_mpileup, run_bcf_norm,
+                                           run_bcf_stats)
 from varcall.modules.exec.hometab import *  # noqa: F403
 from varcall.modules.exec.samtools import *  # noqa: F403
 from varcall.modules.Help.Help import HelpMarkdown
-from varcall.modules.widgets.Home import HomeWidgets
 from varcall.modules.logging import setup_logging
+# Importing custom varcall.modules and functions
+from varcall.modules.widgets.Bcftools import BcftoolsWidgets
+from varcall.modules.widgets.Home import HomeWidgets
 from varcall.modules.widgets.Pipeline import PipelineWidgets
 from varcall.modules.widgets.Samtools import SamtoolsWidgets
 from varcall.modules.widgets.YesOrNo import YesOrNo
@@ -276,7 +270,6 @@ class Varcall(App[None]):
     @on(Button.Pressed, "#bcf_norm_button")
     def call_bcf_norm(self):
         run_bcf_norm(self)
-
 
     # Handels the key press for Toggle dark mode
     def action_toggle_dark_mode(self) -> None:
