@@ -9,6 +9,7 @@ from textual.widgets import (
 )
 
 from varcall.components.input_block import ProcessWidgets
+from varcall.process.process_dict import PROCESSES
 
 class Varcall(App[None]):
     # Key bindings for the application
@@ -34,7 +35,7 @@ class Varcall(App[None]):
             yield Footer(show_command_palette=True)
             with TabbedContent():
                 with TabPane("Home", id="HomeTab"):
-                    yield ProcessWidgets()
+                    yield ProcessWidgets(PROCESSES)
                 with TabPane("Samtools", id="SamtoolsTab"):
                     yield Button("Samtools")
                 with TabPane("Bcftools", id="BcftoolsTab"):
