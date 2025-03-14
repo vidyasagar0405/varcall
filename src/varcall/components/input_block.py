@@ -1,28 +1,9 @@
-from pathlib import Path
 from textual.app import ComposeResult
-from textual.containers import ScrollableContainer
-from textual.suggester import Suggester
+from textual.containers import ScrollableContainer, Horizontal
 from textual.widgets import Button, Input, Label, LoadingIndicator, Static
 
 from varcall.process.process_class import ProcessConfig
-
-
-class FileSuggester(Suggester):
-    async def get_suggestion(self, value: str) -> str | None:
-        """
-        Provides file path suggestions based on the input value.
-        """
-        # Handle absolute paths
-        if value.startswith("/"):
-            return " "
-        # Handle invalid pattern '**' anywhere in the input
-        if "**" in value:
-            return " "
-        path = next(Path().glob(f"{value}*"), None)
-        return str(path) if path else None
-
-
-file_suggester = FileSuggester(use_cache=False, case_sensitive=True)
+from varcall.components.file_suggester import file_suggester
 
 
 class ProcessWidgets(Static):
@@ -37,18 +18,17 @@ class ProcessWidgets(Static):
         width: 100%;
         height: auto;
         margin: 0 1;
+        border: tall $primary;
+        background: $boost;
     }
 
     .process-widget {
-        layout: grid;
-        grid-size: 1;
-        grid-rows: 4;
-        background: $boost;
+        layout: vertical;
+        width: 100%;
         height: auto;
         min-height: 12;
         margin: 1 0;
         padding: 1;
-        border: tall $primary;
     }
 
     .process-title {
@@ -61,11 +41,23 @@ class ProcessWidgets(Static):
         border: tall $primary-darken-2;
     }
 
+    .input-field {
+        margin: 1 0;
+        width: 98%;
+    }
+
     .process-description {
         margin: 1;
         padding: 0 2;
         color: $text-muted;
+        width: 98%;
+    }
+
+    .button-container {
         width: 100%;
+        content-align: right middle;
+        height: auto;
+        margin: 1 0;
     }
 
     Input {
@@ -89,11 +81,10 @@ class ProcessWidgets(Static):
     }
 
     .action_buttons {
-        dock: left;
+        margin-right: 1;
     }
 
     .view_results {
-        dock: right;
         background: $success;
     }
 
@@ -104,7 +95,6 @@ class ProcessWidgets(Static):
     LoadingIndicator {
         width: 16;
         height: 3;
-        dock: right;
         display: none;
         margin: 1;
         color: $warning;
@@ -114,16 +104,14 @@ class ProcessWidgets(Static):
         display: block;
     }
 
-    .process-widget:focus-within {
+    ScrollableContainer:focus-within {
         border: tall $accent;
     }
 
-    .process-widget.running {
+    ScrollableContainer.running {
         border: tall $warning;
     }
     """
-
-
 
     def __init__(self, processes: dict[str, ProcessConfig]):
         self.processes = processes
@@ -131,35 +119,38 @@ class ProcessWidgets(Static):
 
     def compose(self) -> ComposeResult:
         for process_name, config in self.processes.items():
-            with ScrollableContainer (classes="process-widget", id=f"{process_name}_widget"):
+            with ScrollableContainer(classes="process-widget", id=f"{process_name}_widget"):
+                # Title at top
                 yield Label(config.name, classes="process-title")
 
-                # Input fields
+                # Input fields in middle
                 for field in config.input_fields:
                     yield Input(
                         placeholder=field.replace("_", " ").title(),
                         id=f"{process_name}_{field}_input",
                         suggester=file_suggester,
+                        classes="input-field"
                     )
 
                 # Description
                 if config.description:
                     yield Label(config.description, classes="process-description")
 
-                # Process button
-                yield Button(
-                    config.name,
-                    id=f"{process_name}_button",
-                    classes="action_buttons",
-                )
+                # Button container for horizontal alignment
+                with Horizontal(classes="button-container"):
+                    yield LoadingIndicator(id=f"{process_name}_loading")
 
-                # View results button (only for processes that generate viewable results)
-                if process_name in ["fastqc", "multiqc", "bcftools_stats"]:
+                    # Process button
                     yield Button(
-                        "View Results",
-                        id=f"view_{process_name}_results",
-                        classes="view_results"
+                        config.name,
+                        id=f"{process_name}_button",
+                        classes="action_buttons",
                     )
 
-                # Loading indicator
-                yield LoadingIndicator(id=f"{process_name}_loading")
+                    # View results button (only for processes that generate viewable results)
+                    if process_name in ["fastqc", "multiqc", "bcftools_stats"]:
+                        yield Button(
+                            "View Results",
+                            id=f"view_{process_name}_results",
+                            classes="view_results"
+                        )

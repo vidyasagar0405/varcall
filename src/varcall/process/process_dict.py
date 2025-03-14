@@ -4,14 +4,14 @@ from varcall.process.process_class import ProcessConfig
 running_processes = {}
 
 # Configure bioinformatics tools
-PROCESSES = {
+HOME_PROCESSES = {
     # Data download tool
     "curl": ProcessConfig(
         name="Data Download",
         command="curl -L {url} -o {output_file}",
         input_fields=["url", "output_file"],
         required_fields=["url", "output_file"],
-        description= "FastQCs the files in the workingdir/data/reads directory [u]if the input field is left empty[/u]",
+        description="FastQCs the files in the workingdir/data/reads directory [u]if the input field is left empty[/u]",
         success_message="Dataset downloaded successfully",
         error_message="Dataset download failed",
     ),
@@ -51,6 +51,8 @@ PROCESSES = {
         success_message="Read alignment completed successfully",
         error_message="Read alignment failed",
     ),
+}
+SAMTOOLS_PROCESSES = {
     "samtools_view": ProcessConfig(
         name="SAM to BAM Conversion",
         command="samtools view -bS {input_sam} > {output_bam}",
@@ -88,6 +90,9 @@ PROCESSES = {
         success_message="BAM file indexed successfully",
         error_message="BAM indexing failed",
     ),
+}
+
+BCFTOOLS_PROCESS = {
     # bcftools operations
     "bcftools_mpileup": ProcessConfig(
         name="BCFtools Mpileup",
@@ -121,6 +126,9 @@ PROCESSES = {
         success_message="Variant filtering completed successfully",
         error_message="Variant filtering failed",
     ),
+}
+
+GATK_PROCESS = {
     # GATK tools
     "gatk_haplotypecaller": ProcessConfig(
         name="GATK HaplotypeCaller",
