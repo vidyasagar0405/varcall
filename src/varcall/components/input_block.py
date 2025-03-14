@@ -49,8 +49,7 @@ class ProcessWidgets(Static):
     .process-description {
         margin: 1;
         padding: 0 2;
-        color: $text-muted;
-        width: 98%;
+        width: 78%;
     }
 
     .button-container {
@@ -89,7 +88,7 @@ class ProcessWidgets(Static):
     }
 
     .view_results:hover {
-        background: $success-lighten-2;
+        background: $success-darken-2;
     }
 
     LoadingIndicator {
@@ -119,7 +118,9 @@ class ProcessWidgets(Static):
 
     def compose(self) -> ComposeResult:
         for process_name, config in self.processes.items():
-            with ScrollableContainer(classes="process-widget", id=f"{process_name}_widget"):
+            with ScrollableContainer(
+                classes="process-widget", id=f"{process_name}_widget"
+            ):
                 # Title at top
                 yield Label(config.name, classes="process-title")
 
@@ -129,15 +130,15 @@ class ProcessWidgets(Static):
                         placeholder=field.replace("_", " ").title(),
                         id=f"{process_name}_{field}_input",
                         suggester=file_suggester,
-                        classes="input-field"
+                        classes="input-field",
                     )
-
-                # Description
-                if config.description:
-                    yield Label(config.description, classes="process-description")
 
                 # Button container for horizontal alignment
                 with Horizontal(classes="button-container"):
+                    # Description
+                    if config.description:
+                        yield Label(f"[orange]Description:[/orange] {config.description}", classes="process-description")
+
                     yield LoadingIndicator(id=f"{process_name}_loading")
 
                     # Process button
@@ -152,5 +153,5 @@ class ProcessWidgets(Static):
                         yield Button(
                             "View Results",
                             id=f"view_{process_name}_results",
-                            classes="view_results"
+                            classes="view_results",
                         )
