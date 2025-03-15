@@ -7,6 +7,7 @@ from varcall.components.file_suggester import file_suggester
 
 
 class ProcessWidgets(Static):
+
     DEFAULT_CSS = """
     ProcessWidgets {
         width: 100%;
@@ -28,7 +29,7 @@ class ProcessWidgets(Static):
         height: auto;
         min-height: 12;
         margin: 1 0;
-        padding: 1;
+        padding: 0 1;
     }
 
     .process-title {
@@ -43,25 +44,23 @@ class ProcessWidgets(Static):
 
     .input-field {
         margin: 1 0;
-        width: 98%;
+        width: 1fr;
     }
 
     .process-description {
-        margin: 1;
-        padding: 0 2;
-        width: 78%;
+        padding: 1 2;
+        width: 1fr;
     }
 
     .button-container {
         width: 100%;
-        content-align: right middle;
         height: auto;
         margin: 1 0;
     }
 
     Input {
         margin: 0 1;
-        width: 98%;
+        width: 100%;
         border: tall $primary-darken-2;
     }
 
@@ -70,13 +69,8 @@ class ProcessWidgets(Static):
     }
 
     Button {
-        margin: 1;
         min-width: 16;
         background: $primary;
-    }
-
-    Button:hover {
-        background: $primary-lighten-2;
     }
 
     .action_buttons {
@@ -85,6 +79,7 @@ class ProcessWidgets(Static):
 
     .view_results {
         background: $success;
+        margin: 0 1;
     }
 
     .view_results:hover {

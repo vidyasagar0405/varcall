@@ -7,10 +7,9 @@ __maintainer__ = "Vidyasagar"
 __version__ = "0.0.2"
 __licence__ = "MIT"
 
-##############################################################################
-# Local imports.
+from pathlib import Path
 
-##############################################################################
-# Export the imports.
+help_dir = Path(__file__).parent
+help_path = help_dir.joinpath("help.md").absolute()
 
 ### __init__.py ends here

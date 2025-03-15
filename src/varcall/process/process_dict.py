@@ -214,3 +214,20 @@ GATK_PROCESS = {
         error_message="Variant selection failed",
     ),
 }
+
+PIPLELINES = {
+    "mpliup_pipeline": ProcessConfig(
+        name = "Mpliup Pipeline (Mock)",
+        command="echo {read_1} > {read_2}",
+        input_fields=[
+            "reference_genome",
+            "read_1",
+            "read_2",
+            "additional_params",
+        ],
+        required_fields=["reference_genome", "read_1", "read_2" ],
+        description="Mpileup Pipeline",
+        success_message="Mpileup Pipeline completed successfully",
+        error_message="An error occured during the execution of the Mpileup Pipeline",
+    )
+}

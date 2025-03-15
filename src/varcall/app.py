@@ -1,15 +1,19 @@
+from pathlib import Path
+
 from textual.app import App, ComposeResult
 from textual.containers import ScrollableContainer
 from textual.widgets import (
-    Button,
     Footer,
     Header,
+    Markdown,
+    MarkdownViewer,
     TabbedContent,
     TabPane,
 )
 
 from varcall.components.input_block import ProcessWidgets
-from varcall.process.process_dict import BCFTOOLS_PROCESS, GATK_PROCESS, HOME_PROCESSES, SAMTOOLS_PROCESSES
+from varcall.process.process_dict import BCFTOOLS_PROCESS, GATK_PROCESS, HOME_PROCESSES, PIPLELINES, SAMTOOLS_PROCESSES
+from varcall.help import help_path
 
 class Varcall(App[None]):
     # Key bindings for the application
@@ -24,10 +28,7 @@ class Varcall(App[None]):
         ("a", "run_alignment", "Align reads"),
     ]
 
-    CSS = """
-#--content-tab-HomeTab{color: green;}
-#--content-tab-HelpTab{color: #1691CE;}
-    """
+    CSS_PATH = "./app.css"
 
     def compose(self) -> ComposeResult:
         with ScrollableContainer(id="ScrollableContainer"):
@@ -43,9 +44,9 @@ class Varcall(App[None]):
                 with TabPane("GATK", id="GATKTab"):
                     yield ProcessWidgets(GATK_PROCESS)
                 with TabPane("Pipeline", id="Pipeline"):
-                    yield ProcessWidgets(HOME_PROCESSES)
+                    yield ProcessWidgets(PIPLELINES)
                 with TabPane("Help", id="HelpTab"):
-                    yield Button("Help")
+                    yield MarkdownViewer(Path(help_path).read_text())
 
 
 
