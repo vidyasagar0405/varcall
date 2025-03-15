@@ -50,6 +50,7 @@ HOME_PROCESSES = {
         description="Align reads to reference genome using BWA MEM algorithm",
         success_message="Read alignment completed successfully",
         error_message="Read alignment failed",
+        default_output_ext=".sam",
     ),
 }
 SAMTOOLS_PROCESSES = {
@@ -61,6 +62,7 @@ SAMTOOLS_PROCESSES = {
         description="Convert SAM file to BAM format",
         success_message="SAM to BAM conversion completed successfully",
         error_message="SAM to BAM conversion failed",
+        default_output_ext=".bam",
     ),
     "bamtools_stats": ProcessConfig(
         name="BAMTools Stats",
@@ -70,6 +72,7 @@ SAMTOOLS_PROCESSES = {
         description="Generate statistics for BAM file",
         success_message="BAM statistics generated successfully",
         error_message="BAM statistics generation failed",
+        default_output_ext=".txt",
     ),
     # Additional samtools operations
     "samtools_sort": ProcessConfig(
@@ -80,6 +83,7 @@ SAMTOOLS_PROCESSES = {
         description="Sort BAM file by coordinates",
         success_message="BAM file sorted successfully",
         error_message="BAM sorting failed",
+        default_output_ext=".bam",
     ),
     "samtools_index": ProcessConfig(
         name="BAM Indexing",
@@ -107,6 +111,7 @@ BCFTOOLS_PROCESS = {
         description="Generate VCF file containing genotype likelihoods for variants",
         success_message="Variant calling (mpileup) completed successfully",
         error_message="Variant calling (mpileup) failed",
+        default_output_ext=".vcf",
     ),
     "bcftools_call": ProcessConfig(
         name="BCFtools Call",
@@ -116,6 +121,7 @@ BCFTOOLS_PROCESS = {
         description="Call variants from VCF file containing genotype likelihoods",
         success_message="Variant calling completed successfully",
         error_message="Variant calling failed",
+        default_output_ext=".vcf",
     ),
     "bcftools_filter": ProcessConfig(
         name="BCFtools Filter",
@@ -125,6 +131,7 @@ BCFTOOLS_PROCESS = {
         description="Filter variants in VCF file based on specified criteria",
         success_message="Variant filtering completed successfully",
         error_message="Variant filtering failed",
+        default_output_ext=".vcf",
     ),
 }
 
@@ -143,6 +150,7 @@ GATK_PROCESS = {
         description="Call germline SNPs and indels via local assembly of haplotypes",
         success_message="Variant calling with HaplotypeCaller completed successfully",
         error_message="Variant calling with HaplotypeCaller failed",
+        default_output_ext=".vcf",
     ),
     "gatk_baserecalibrator": ProcessConfig(
         name="GATK BaseRecalibrator",
@@ -176,6 +184,7 @@ GATK_PROCESS = {
         description="Apply base quality score recalibration",
         success_message="Base quality score recalibration applied successfully",
         error_message="Base quality score recalibration failed",
+        default_output_ext=".bam",
     ),
     "gatk_variantfiltration": ProcessConfig(
         name="GATK VariantFiltration",
@@ -197,6 +206,7 @@ GATK_PROCESS = {
         description="Filter variants based on specified criteria",
         success_message="Variant filtration completed successfully",
         error_message="Variant filtration failed",
+        default_output_ext=".vcf",
     ),
     "gatk_selectvariants": ProcessConfig(
         name="GATK SelectVariants",
@@ -212,6 +222,7 @@ GATK_PROCESS = {
         description="Select a subset of variants from a VCF file",
         success_message="Variant selection completed successfully",
         error_message="Variant selection failed",
+        default_output_ext=".vcf",
     ),
 }
 
@@ -229,5 +240,15 @@ PIPLELINES = {
         description="Mpileup Pipeline",
         success_message="Mpileup Pipeline completed successfully",
         error_message="An error occured during the execution of the Mpileup Pipeline",
+        default_output_ext=".vcf",
     )
+}
+
+
+MASTER_CONFIG: dict[str, dict[str, ProcessConfig]] = {
+    "home": HOME_PROCESSES,
+    "samtools": SAMTOOLS_PROCESSES,
+    "bcftools": BCFTOOLS_PROCESS,
+    "gatk": GATK_PROCESS,
+    "pipeline": PIPLELINES,
 }

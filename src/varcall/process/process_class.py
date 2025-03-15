@@ -1,8 +1,10 @@
+from pathlib import Path
 import threading
 import subprocess
 import logging
 from typing import Dict, List, Any
 from dataclasses import dataclass
+from datetime import datetime
 
 
 # Import the Process and ProcessConfig classes
@@ -12,6 +14,7 @@ class ProcessConfig:
     command: str
     input_fields: List[str]
     required_fields: List[str]
+    default_output_ext: str = ""
     description: str = ""
     success_message: str = ""
     error_message: str = ""
@@ -23,7 +26,7 @@ class Process:
         self.config = config
         self.inputs: Dict[str, str] = {}
 
-    def get_inputs(self, form_data) -> bool:
+    def get_inputs(self, form_data) -> tuple[bool, str]:
         """Collect all inputs from form data"""
         for field in self.config.input_fields:
             value = form_data.get(field, "")
@@ -35,6 +38,19 @@ class Process:
     def format_command(self) -> str:
         """Format command string with input values"""
         return self.config.command.format(**self.inputs)
+
+    def get_default_output_file(self) -> Path:
+        cwd = Path().cwd().absolute()
+        tab = self.config.command.split()[0].lower()
+        tool = self.config.name.lower().replace(" ", "_")
+        ext = self.config.default_output_ext
+        now = datetime.now()
+        date_time = now.strftime("%H%M_%d%m%Y")
+        file = f"{tool}_{date_time}{ext}"
+
+        default = cwd.joinpath(tab, file)
+
+        return default
 
     def run(self, form_data):
         """Main entry point to run the process"""

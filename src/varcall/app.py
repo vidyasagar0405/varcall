@@ -1,11 +1,11 @@
 from pathlib import Path
 
+from textual import on
 from textual.app import App, ComposeResult
 from textual.containers import ScrollableContainer
 from textual.widgets import (
     Footer,
     Header,
-    Markdown,
     MarkdownViewer,
     TabbedContent,
     TabPane,
