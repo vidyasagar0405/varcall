@@ -15,7 +15,8 @@ A genome variant calling tool (wrapper) written in python using textual lib
 ## Installation
 
 > [!NOTE]
-> **🚧 Under early development 🚧**
+> v0.0.1 is available for use. 
+> **Refactoring in [rewrite2 branch](https://github.com/vidyasagar0405/varcall/tree/rewrite2) (for better control and entry point over the tools)**
 
 ```console
 pip install varcall
