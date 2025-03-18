@@ -25,7 +25,7 @@ pip install varcall
 > [!NOTE]
 > It is recommended to run `varcall` in a conda environment
 
-To install conda refer [miniconda](https://docs.anaconda.com/miniconda/) 
+To install conda refer [miniconda](https://docs.anaconda.com/miniconda/)
 
 `varcall` requires variant calling tools to run, you can download them by:
 ```console
@@ -42,6 +42,10 @@ conda install -c bioconda fastqc multiqc bwa samtools bcftools
 
 
 ![Bcftools tab image](./doc/images/Bcftoolstab-image.jpg?raw=true "Bcftools tab")
+
+
+
+![GATK tab image](./doc/images/gatktab-image.jpg?raw=true "GATK tab")
 
 
 
