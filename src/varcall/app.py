@@ -4,6 +4,7 @@ from textual import on
 from textual.app import App, ComposeResult
 from textual.containers import ScrollableContainer
 from textual.widgets import (
+    Button,
     Footer,
     Header,
     MarkdownViewer,
@@ -12,6 +13,7 @@ from textual.widgets import (
 )
 
 from varcall.components.input_block import ProcessWidgets
+from varcall.process.process_class import Process
 from varcall.process.process_dict import BCFTOOLS_PROCESS, GATK_PROCESS, HOME_PROCESSES, PIPLELINES, SAMTOOLS_PROCESSES
 from varcall.help import help_path
 
@@ -48,6 +50,13 @@ class Varcall(App[None]):
                 with TabPane("Help", id="HelpTab"):
                     yield MarkdownViewer(Path(help_path).read_text())
 
+    def on_button_pressed(self, event: Button.Pressed) -> None:
+        button_id = event.button.id
+        if button_id and button_id.endswith("_button"):
+            process_name = button_id.replace("_button", "")
+            if process_name in HOME_PROCESSES:
+                Process(self, HOME_PROCESSES[process_name]).run()
+            self.notify(f"starting {process_name}")
 
 
 # Main entry point of the application

@@ -26,13 +26,12 @@ class Process:
         self.config = config
         self.inputs: Dict[str, str] = {}
 
-    def get_inputs(self, form_data) -> tuple[bool, str]:
+    def get_inputs(self) -> tuple[bool, str]:
         """Collect all inputs from form data"""
         for field in self.config.input_fields:
-            value = form_data.get(field, "")
-            if not value and field in self.config.required_fields:
+            if not field and field in self.config.required_fields:
                 return False, f"Please provide a value for {field}"
-            self.inputs[field] = value or ""
+            self.inputs[field] = field or ""
         return True, ""
 
     def format_command(self) -> str:
@@ -52,13 +51,14 @@ class Process:
 
         return default
 
-    def run(self, form_data):
+    def run(self):
         """Main entry point to run the process"""
-        success, message = self.get_inputs(form_data)
+        success, message = self.get_inputs()
         if not success:
             return {"status": "error", "message": message}
 
         logging.info(f"Running {self.config.name}...")
+        self.app.notify(self.format_command(), title=self.config.name)
 
         # Start process thread
         thread = threading.Thread(target=self._run_process, args=())
@@ -87,6 +87,7 @@ class Process:
             )
             logging.info(msg)
             logging.info(f"Output: {result.stdout}")
+            self.app.notify(f"{self.config.name}completed", title=self.config.name)
 
             # Store the result in a file for later retrieval
             with open(f"results/{self.config.name.lower()}_result.txt", "w") as f:
@@ -95,6 +96,7 @@ class Process:
         except subprocess.CalledProcessError as e:
             error_msg = (self.config.error_message or f"Error in {self.config.name}: {e.stderr}")
             logging.error(error_msg)
+            self.app.notify(f"An error occured {e}", title=self.config.name)
 
             # Store the error in a file for later retrieval
             with open(f"results/{self.config.name.lower()}_error.txt", "w") as f:
