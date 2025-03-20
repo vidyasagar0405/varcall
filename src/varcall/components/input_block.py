@@ -34,7 +34,7 @@ class ProcessWidgets(Static):
 
     .process-title {
         text-style: bold;
-        background: $primary-darken-1;
+        background: $secondary-darken-1;
         color: $foreground;
         width: 100%;
         height: 3;
