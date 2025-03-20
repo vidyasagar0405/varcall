@@ -4,7 +4,7 @@ __author__ = "Vidyasagar"
 __copyright__ = "Copyright 2024, Vidyasagar"
 __credits__ = ["Vidyasagar"]
 __maintainer__ = "Vidyasagar"
-__version__ = "0.0.2"
+__version__ = "2.0.0"
 __licence__ = "MIT"
 
 from pathlib import Path
