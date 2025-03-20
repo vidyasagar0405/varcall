@@ -2,13 +2,12 @@ from pathlib import Path
 import threading
 import subprocess
 import logging
-from typing import Dict, List, Any, Optional
+from typing import Dict, List, Any, Optional, Tuple
 from dataclasses import dataclass
 from datetime import datetime
 from textual.widgets import Input
 
 
-# Import the Process and ProcessConfig classes
 @dataclass
 class ProcessConfig:
     name: str
@@ -32,71 +31,116 @@ class Process:
         self.config = config
         self.inputs: Dict[str, str] = {}
         self.outputs: Dict[str, str] = {}
-        self.all_fields: Dict[str, str] = {**self.inputs, **self.outputs}
 
-    def get_input(self, field) -> str:
-        process_name = self.config.name.lower().replace(" ", "_").replace("(", "").replace(")", "")
+    @property
+    def all_fields(self) -> Dict[str, str]:
+        """Return combined dictionary of inputs and outputs"""
+        return {**self.inputs, **self.outputs}
+
+    def _get_input(self, field) -> str:
+        """Get input value from a form field"""
+        process_name = self.config.name.lower().replace(" ", "_")
         return self.app.query_one(f"#{process_name}_{field}_input", Input).value.strip()
 
-    def get_output(self, field) -> str:
-        value = self.get_input(field)
+    def _get_all_fields_with_defaults(self, field) -> str:
+        """Get field value with default fallback for empty values"""
+        value = self._get_input(field)
         if not value:
-            value = self.get_default_output_file().__str__()
+            value = str(self.get_default_output_file())
         return value
 
-    def validate_inputs(self) -> tuple[bool, str]:
-        """Collect all inputs from form data"""
+    def validate_inputs(self) -> Tuple[bool, str]:
+        """Collect all inputs from form data and validate required fields"""
+        # Clear previous input values
+        self.inputs = {}
+        self.outputs = {}
+
         for field in self.config.input_fields:
-            if not field and field in self.config.required_fields:
-                return False, f"Please provide a value for {field}"
+            input_value = self._get_input(field)
+
+            if not input_value and field in self.config.required_fields:
+                return False, field
+
             if field.startswith("output_"):
-                self.outputs[field] = self.get_output(field)
+                self.outputs[field] = self._get_all_fields_with_defaults(field)
             else:
-                self.inputs[field] = self.get_input(field)
+                self.inputs[field] = input_value
+
         return True, ""
 
     def format_command(self) -> str:
         """Format command string with input values"""
+        # Use the all_fields property to combine inputs and outputs
         return self.config.command.format(**self.all_fields)
 
     def get_default_output_file(self) -> Path:
+        """Generate a default output file path with timestamp"""
+
         cwd = Path().cwd().absolute()
+
         tab = self.config.command.split()[0].lower()
         tool = self.config.name.lower().replace(" ", "_")
         ext = self.config.default_output_ext
-        now = datetime.now()
-        date_time = now.strftime("%H%M_%d%m%Y")
+        date_time = datetime.now().strftime("%H%M_%d%m%Y")
+
         file = f"{tool}_{date_time}{ext}"
 
-        default = cwd.joinpath(tab, file)
+        if self.config.name == "curl":
+            file = (
+                self.app.query_one("#curl_url_input", Input)
+                .value
+                .strip()
+            ).split("/")[-1]
 
-        return default
+        # Create directories if they don't exist
+        output_dir = cwd.joinpath("results", tab)
+        output_dir.mkdir(exist_ok=True, parents=True)
+
+        return output_dir.joinpath(file)
 
     def run(self):
         """Main entry point to run the process"""
-        success, message = self.validate_inputs()
+        success, field = self.validate_inputs()
         if not success:
-            self.app.notify(message, title=self.config.name)
-            return {"status": "error", "message": message}
+            self.app.notify(
+                f"Please provide a value for [b][i]{field}[/i][/b]",
+                title=self.config.name,
+                severity="warning"
+            )
+            return
 
+        self.app.notify(f"Running {self.config.name}...")
         logging.info(f"Running {self.config.name}...")
-        self.app.notify(self.format_command(), title=self.config.name)
 
-        # Start process thread
-        thread = threading.Thread(target=self._run_process, args=())
-        thread.daemon = True
-        thread.start()
+        try:
+            command = self.format_command()
+            # For debugging
+            self.app.notify(command, title=self.config.name)
 
-        return {"status": "running", "message": f"Running {self.config.name}..."}
+            # Start process thread
+            thread = threading.Thread(target=self._run_process, args=(command,))
+            thread.daemon = True
+            thread.start()
+        except KeyError as e:
+            self.app.notify(
+                f"Error formatting command: Missing field [b][i]{e}[/i][/b]",
+                title=self.config.name,
+                severity="error"
+            )
+            logging.error(f"Command format error in {self.config.name}: {e}")
+            return
 
-    def _run_process(self):
+    def _run_process(self, command: str):
         """Execute the actual process in a thread"""
         try:
-            cmd = self.format_command()
-            logging.info(f"Running command: {cmd}")
+            logging.info(f"Running command: {command}")
+
+            # Ensure results directory exists
+            results_dir = Path("results")
+            results_dir.mkdir(exist_ok=True)
 
             result = subprocess.run(
-                cmd.split(),
+                command.split(),
                 check=True,
                 stdout=subprocess.PIPE,
                 stderr=subprocess.PIPE,
@@ -109,17 +153,16 @@ class Process:
             )
             logging.info(msg)
             logging.info(f"Output: {result.stdout}")
-            self.app.notify(f"{self.config.name}completed", title=self.config.name)
-
-            # Store the result in a file for later retrieval
-            with open(f"results/{self.config.name.lower()}_result.txt", "w") as f:
-                f.write(result.stdout)
+            self.app.notify(msg, title=self.config.name)
 
         except subprocess.CalledProcessError as e:
-            error_msg = (self.config.error_message or f"Error in {self.config.name}: {e.stderr}")
+            error_msg = (
+                self.config.error_message
+                or f"Error in {self.config.name}: {e.stderr}"
+            )
             logging.error(error_msg)
-            self.app.notify(f"An error occured {e}", title=self.config.name)
-
-            # Store the error in a file for later retrieval
-            with open(f"results/{self.config.name.lower()}_error.txt", "w") as f:
-                f.write(e.stderr)
+            self.app.notify(
+                f"An error occurred: {e.stderr[:100]}{'...' if len(e.stderr) > 100 else ''}",
+                title=self.config.name,
+                severity="error"
+            )

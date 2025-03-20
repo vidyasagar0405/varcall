@@ -2,20 +2,19 @@ from pathlib import Path
 
 from textual.app import App, ComposeResult
 from textual.containers import ScrollableContainer
-from textual.widgets import (
-    Button,
-    Footer,
-    Header,
-    MarkdownViewer,
-    TabbedContent,
-    TabPane,
-)
+from textual.widgets import ( Button, Footer, Header, MarkdownViewer,
+                              TabbedContent, TabPane,
+                            )
 
 from varcall.components.input_block import ProcessWidgets
 from varcall.components.yes_or_no import YesOrNo
 from varcall.process.process_class import Process
-from varcall.process.process_dict import BCFTOOLS_PROCESS, GATK_PROCESS, HOME_PROCESSES, PIPLELINES, SAMTOOLS_PROCESSES
+from varcall.process.process_dict import ( BCFTOOLS_PROCESS, GATK_PROCESS,
+                                           HOME_PROCESSES, PIPLELINES,
+                                           SAMTOOLS_PROCESSES,
+                                          )
 from varcall.help import help_path
+
 
 class Varcall(App[None]):
     # Key bindings for the application
@@ -52,8 +51,6 @@ class Varcall(App[None]):
             process_name = button_id.replace("_button", "")
             if process_name in HOME_PROCESSES:
                 Process(self, HOME_PROCESSES[process_name]).run()
-            self.notify(f"starting {process_name}")
-
 
     # Confirm exit application
     def maybe_exit_app(self, bool) -> None:
@@ -75,7 +72,7 @@ class Varcall(App[None]):
 
     def action_print_theme_data(self):
         with open("themes.txt", "a") as f:
-            f.write(f"{self.app.theme}\n\n")
+            f.write(f"\n\n{self.app.theme}\n\n")
             for key, value in self.app.theme_variables.items():
                 f.write(f"{key}: {value}\n")
 
