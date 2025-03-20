@@ -5,9 +5,9 @@ Log file is located at `/tmp/varcall.log`
 >
 > **NOTE**
 > It is recommended to run `varcall` in a conda environment
-> 
+>
 
-To install conda refer [miniconda](https://docs.anaconda.com/miniconda/) 
+To install conda refer [miniconda](https://docs.anaconda.com/miniconda/)
 
 `varcall` requires variant calling tools to run, you can download them by:
 ```console

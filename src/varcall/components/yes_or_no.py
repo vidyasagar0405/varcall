@@ -13,6 +13,7 @@ class YesOrNo(ModalScreen):
             align: center middle;
             Container{
                 width: auto;
+                align: center middle;
                 height: auto;
                 padding: 1 2;
                 margin: 2;
@@ -35,7 +36,7 @@ class YesOrNo(ModalScreen):
                 }
             }"""
 
-    def __init__(self, Title: str = "Input") -> None:
+    def __init__(self, Title: str = "Yes or No") -> None:
         self.Title = Title
         super().__init__()
 
