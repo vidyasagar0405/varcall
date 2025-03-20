@@ -2,9 +2,10 @@ from pathlib import Path
 import threading
 import subprocess
 import logging
-from typing import Dict, List, Any
+from typing import Dict, List, Any, Optional
 from dataclasses import dataclass
 from datetime import datetime
+from textual.widgets import Input
 
 
 # Import the Process and ProcessConfig classes
@@ -14,10 +15,15 @@ class ProcessConfig:
     command: str
     input_fields: List[str]
     required_fields: List[str]
+    display_name: Optional[str] = None
     default_output_ext: str = ""
     description: str = ""
     success_message: str = ""
     error_message: str = ""
+
+    def __post_init__(self):
+        if self.display_name is None:
+            self.display_name = self.name.replace("_", " ").title()
 
 
 class Process:
@@ -25,18 +31,33 @@ class Process:
         self.app = app_instance
         self.config = config
         self.inputs: Dict[str, str] = {}
+        self.outputs: Dict[str, str] = {}
+        self.all_fields: Dict[str, str] = {**self.inputs, **self.outputs}
 
-    def get_inputs(self) -> tuple[bool, str]:
+    def get_input(self, field) -> str:
+        process_name = self.config.name.lower().replace(" ", "_").replace("(", "").replace(")", "")
+        return self.app.query_one(f"#{process_name}_{field}_input", Input).value.strip()
+
+    def get_output(self, field) -> str:
+        value = self.get_input(field)
+        if not value:
+            value = self.get_default_output_file().__str__()
+        return value
+
+    def validate_inputs(self) -> tuple[bool, str]:
         """Collect all inputs from form data"""
         for field in self.config.input_fields:
             if not field and field in self.config.required_fields:
                 return False, f"Please provide a value for {field}"
-            self.inputs[field] = field or ""
+            if field.startswith("output_"):
+                self.outputs[field] = self.get_output(field)
+            else:
+                self.inputs[field] = self.get_input(field)
         return True, ""
 
     def format_command(self) -> str:
         """Format command string with input values"""
-        return self.config.command.format(**self.inputs)
+        return self.config.command.format(**self.all_fields)
 
     def get_default_output_file(self) -> Path:
         cwd = Path().cwd().absolute()
@@ -53,8 +74,9 @@ class Process:
 
     def run(self):
         """Main entry point to run the process"""
-        success, message = self.get_inputs()
+        success, message = self.validate_inputs()
         if not success:
+            self.app.notify(message, title=self.config.name)
             return {"status": "error", "message": message}
 
         logging.info(f"Running {self.config.name}...")

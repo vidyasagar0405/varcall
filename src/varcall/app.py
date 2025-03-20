@@ -1,6 +1,5 @@
 from pathlib import Path
 
-from textual import on
 from textual.app import App, ComposeResult
 from textual.containers import ScrollableContainer
 from textual.widgets import (
@@ -13,6 +12,7 @@ from textual.widgets import (
 )
 
 from varcall.components.input_block import ProcessWidgets
+from varcall.components.yes_or_no import YesOrNo
 from varcall.process.process_class import Process
 from varcall.process.process_dict import BCFTOOLS_PROCESS, GATK_PROCESS, HOME_PROCESSES, PIPLELINES, SAMTOOLS_PROCESSES
 from varcall.help import help_path
@@ -21,13 +21,9 @@ class Varcall(App[None]):
     # Key bindings for the application
     BINDINGS = [
         ("f1", "show_help", "Help"),
-        ("q", "exit_app", "Exit App"),
-        ("D", "toggle_dark_mode", "Dark/Light mode"),
-        ("d", "run_download", "Download"),
-        ("f", "run_fastqc", "Run FastQC"),
-        ("m", "run_multiqc", "Run MultiQC"),
-        ("i", "run_index", "Index reference genome"),
-        ("a", "run_alignment", "Align reads"),
+        ("Q", "exit_app", "Exit App"),
+        ("T", "change_theme", "Change Theme"),
+        ("P", "print_theme_data", "Print Theme data"),
     ]
 
     CSS_PATH = "./app.css"
@@ -57,6 +53,31 @@ class Varcall(App[None]):
             if process_name in HOME_PROCESSES:
                 Process(self, HOME_PROCESSES[process_name]).run()
             self.notify(f"starting {process_name}")
+
+
+    # Confirm exit application
+    def maybe_exit_app(self, bool) -> None:
+        if bool:
+            self.exit()
+
+    def action_exit_app(self) -> None:
+        self.push_screen(
+            YesOrNo("Do you want to exit application?"), self.maybe_exit_app
+        )
+
+    # Handels the key press for Toggle dark mode
+    def action_change_theme(self) -> None:
+        self.search_themes()
+
+    # Handels the key press for Show help action
+    def action_show_help(self) -> None:
+        self.query_one(TabbedContent).active = "HelpTab"
+
+    def action_print_theme_data(self):
+        with open("themes.txt", "a") as f:
+            f.write(f"{self.app.theme}\n\n")
+            for key, value in self.app.theme_variables.items():
+                f.write(f"{key}: {value}\n")
 
 
 # Main entry point of the application

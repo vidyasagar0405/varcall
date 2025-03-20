@@ -20,7 +20,7 @@ class ProcessWidgets(Static):
         height: auto;
         margin: 0 1;
         border: tall $primary;
-        background: $boost;
+        background: $surface-darken-1;
     }
 
     .process-widget {
@@ -34,12 +34,12 @@ class ProcessWidgets(Static):
 
     .process-title {
         text-style: bold;
-        background: $panel;
-        color: $text;
+        background: $primary-darken-1;
+        color: $foreground;
         width: 100%;
         height: 3;
         content-align: center middle;
-        border: tall $primary-darken-2;
+        border: tall $primary-darken-3;
     }
 
     .input-field {
@@ -62,6 +62,7 @@ class ProcessWidgets(Static):
         margin: 0 1;
         width: 100%;
         border: tall $primary-darken-2;
+        background: $surface-darken-2;
     }
 
     Input:focus {
@@ -78,12 +79,12 @@ class ProcessWidgets(Static):
     }
 
     .view_results {
-        background: $success;
+        background: $success-darken-1;
         margin: 0 1;
     }
 
     .view_results:hover {
-        background: $success-darken-2;
+        background: $success;
     }
 
     LoadingIndicator {
@@ -112,12 +113,13 @@ class ProcessWidgets(Static):
         super().__init__()
 
     def compose(self) -> ComposeResult:
-        for process_name, config in self.processes.items():
+        for config in self.processes.values():
+            process_name = config.name.lower().replace(" ", "_")
             with ScrollableContainer(
                 classes="process-widget", id=f"{process_name}_widget"
             ):
                 # Title at top
-                yield Label(config.name, classes="process-title")
+                yield Label(config.display_name, classes="process-title")
 
                 # Input fields in middle
                 for field in config.input_fields:
@@ -138,7 +140,7 @@ class ProcessWidgets(Static):
 
                     # Process button
                     yield Button(
-                        config.name,
+                        config.display_name,
                         id=f"{process_name}_button",
                         classes="action_buttons",
                     )
