@@ -111,6 +111,7 @@ class Process:
 
         self.app.notify(f"Running {self.config.name}...")
         logging.info(f"Running {self.config.name}...")
+        self.app.query_one(f"#{self.config.name}_loading").add_class("running")
 
         try:
             command = self.format_command()
@@ -139,8 +140,21 @@ class Process:
             results_dir = Path("results")
             results_dir.mkdir(exist_ok=True)
 
+            # Get executable and arguments
+            cmd_parts = command.split()
+            executable = cmd_parts[0]
+
+            # Check if executable exists in PATH
+            # from shutil import which
+            # if which(executable) is None:
+            #     self.app.notify(
+            #         f"Executable '{executable}' not found in PATH",
+            #         title=self.config.display_name,
+            #         severity="error",
+            #     )
+
             result = subprocess.run(
-                command.split(),
+                cmd_parts,
                 check=True,
                 stdout=subprocess.PIPE,
                 stderr=subprocess.PIPE,
@@ -155,6 +169,15 @@ class Process:
             logging.info(f"Output: {result.stdout}")
             self.app.notify(msg, title=self.config.name)
 
+        except FileNotFoundError as e:
+            error_msg = f"Command not found: {command.split()[0]}"
+            logging.error(error_msg)
+            self.app.notify(
+                error_msg,
+                title=self.config.name,
+                severity="error"
+            )
+
         except subprocess.CalledProcessError as e:
             error_msg = (
                 self.config.error_message
@@ -166,3 +189,7 @@ class Process:
                 title=self.config.name,
                 severity="error"
             )
+
+        finally:
+            self.app.query_one(f"#{self.config.name}_loading").remove_class("running")
+
