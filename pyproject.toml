@@ -61,4 +61,4 @@ exclude_lines = [
 ]
 
 [project.scripts]
-varcall = "varcall.main:main"
+varcall = "varcall.__main__:main"
