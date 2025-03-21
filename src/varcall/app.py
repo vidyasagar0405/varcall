@@ -9,10 +9,7 @@ from textual.widgets import ( Button, Footer, Header, MarkdownViewer,
 from varcall.components.input_block import ProcessWidgets
 from varcall.components.yes_or_no import YesOrNo
 from varcall.process.process_class import Process
-from varcall.process.process_dict import ( BCFTOOLS_PROCESS, GATK_PROCESS,
-                                           HOME_PROCESSES, PIPLELINES,
-                                           SAMTOOLS_PROCESSES,
-                                          )
+from varcall.config.yaml_parcing import MASTER_CONFIG
 from varcall.help import help_path
 
 
@@ -30,27 +27,22 @@ class Varcall(App[None]):
     def compose(self) -> ComposeResult:
         with ScrollableContainer(id="ScrollableContainer"):
             yield Header()
-            yield Footer(show_command_palette=True)
             with TabbedContent():
-                with TabPane("Home", id="HomeTab"):
-                    yield ProcessWidgets(HOME_PROCESSES)
-                with TabPane("Samtools", id="SamtoolsTab"):
-                    yield ProcessWidgets(SAMTOOLS_PROCESSES)
-                with TabPane("Bcftools", id="BcftoolsTab"):
-                    yield ProcessWidgets(BCFTOOLS_PROCESS)
-                with TabPane("GATK", id="GATKTab"):
-                    yield ProcessWidgets(GATK_PROCESS)
-                with TabPane("Pipeline", id="Pipeline"):
-                    yield ProcessWidgets(PIPLELINES)
+                for tab, processes_dict in MASTER_CONFIG.items():
+                    tab = tab.title()
+                    with TabPane(tab, id=f"{tab}Tab"):
+                        yield ProcessWidgets(processes_dict)
                 with TabPane("Help", id="HelpTab"):
                     yield MarkdownViewer(Path(help_path).read_text())
+            yield Footer(show_command_palette=True)
 
     def on_button_pressed(self, event: Button.Pressed) -> None:
         button_id = event.button.id
         if button_id and button_id.endswith("_button"):
             process_name = button_id.replace("_button", "")
-            if process_name in HOME_PROCESSES:
-                Process(self, HOME_PROCESSES[process_name]).run()
+            for tab in MASTER_CONFIG.values():
+                if process_name in tab:
+                    Process(self, tab[process_name]).run()
 
     # Confirm exit application
     def maybe_exit_app(self, bool) -> None:

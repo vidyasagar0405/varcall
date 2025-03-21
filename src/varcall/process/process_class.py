@@ -104,13 +104,13 @@ class Process:
         if not success:
             self.app.notify(
                 f"Please provide a value for [b][i]{field}[/i][/b]",
-                title=self.config.name,
+                title=self.config.display_name,
                 severity="warning"
             )
             return
 
-        self.app.notify(f"Running {self.config.name}...")
-        logging.info(f"Running {self.config.name}...")
+        self.app.notify(f"Running {self.config.display_name}...")
+        logging.info(f"Running {self.config.display_name}...")
         self.app.query_one(f"#{self.config.name}_loading").add_class("running")
 
         try:
@@ -125,7 +125,7 @@ class Process:
         except KeyError as e:
             self.app.notify(
                 f"Error formatting command: Missing field [b][i]{e}[/i][/b]",
-                title=self.config.name,
+                title=self.config.display_name,
                 severity="error"
             )
             logging.error(f"Command format error in {self.config.name}: {e}")
@@ -163,33 +163,34 @@ class Process:
 
             msg = (
                 self.config.success_message
-                or f"{self.config.name} completed successfully"
+                or f"{self.config.display_name} completed successfully"
             )
             logging.info(msg)
             logging.info(f"Output: {result.stdout}")
-            self.app.notify(msg, title=self.config.name)
+            self.app.notify(msg, title=self.config.display_name)
 
-        except FileNotFoundError as e:
+        # Should it be`as e` ?? I don't know
+        except FileNotFoundError:
             error_msg = f"Command not found: {command.split()[0]}"
             logging.error(error_msg)
             self.app.notify(
                 error_msg,
-                title=self.config.name,
+                title=self.config.display_name,
                 severity="error"
             )
 
         except subprocess.CalledProcessError as e:
             error_msg = (
                 self.config.error_message
-                or f"Error in {self.config.name}: {e.stderr}"
+                or f"Error in {self.config.display_name}: {e.stderr}"
             )
             logging.error(error_msg)
             self.app.notify(
                 f"An error occurred: {e.stderr[:100]}{'...' if len(e.stderr) > 100 else ''}",
-                title=self.config.name,
+                title=self.config.display_name,
                 severity="error"
             )
 
         finally:
-            self.app.query_one(f"#{self.config.name}_loading").remove_class("running")
+            self.app.query_one(f"#{self.config.display_name}_loading").remove_class("running")
 

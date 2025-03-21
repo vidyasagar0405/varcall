@@ -247,7 +247,7 @@ PIPLELINES = {
 }
 
 
-master_config: dict[str, dict[str, ProcessConfig]] = {
+DEFAULT_MASTER_CONFIG: dict[str, dict[str, ProcessConfig]] = {
     "home": HOME_PROCESSES,
     "samtools": SAMTOOLS_PROCESSES,
     "bcftools": BCFTOOLS_PROCESS,
