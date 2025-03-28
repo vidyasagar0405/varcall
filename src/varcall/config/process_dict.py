@@ -1,8 +1,5 @@
 from varcall.process.process_class import ProcessConfig
 
-# dictionary to track running processes
-running_processes = {}
-
 # configure bioinformatics tools
 HOME_PROCESSES = {
     # data download tool
@@ -247,7 +244,7 @@ PIPLELINES = {
 }
 
 
-master_config: dict[str, dict[str, ProcessConfig]] = {
+DEFAULT_MASTER_CONFIG: dict[str, dict[str, ProcessConfig]] = {
     "home": HOME_PROCESSES,
     "samtools": SAMTOOLS_PROCESSES,
     "bcftools": BCFTOOLS_PROCESS,
