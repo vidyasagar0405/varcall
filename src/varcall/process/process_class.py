@@ -8,7 +8,7 @@ from datetime import datetime
 from textual.widgets import Input
 
 
-@dataclass
+@dataclass(frozen=True)
 class ProcessConfig:
     name: str
     command: str
@@ -21,8 +21,8 @@ class ProcessConfig:
     error_message: str = ""
 
     def __post_init__(self):
-        if self.display_name is None:
-            self.display_name = self.name.replace("_", " ").title()
+        object.__setattr__(self, "display_name",
+                         self.display_name or self.name.replace("_", " ").title())
 
 
 class Process:
@@ -103,7 +103,7 @@ class Process:
         success, field = self.validate_inputs()
         if not success:
             self.app.notify(
-                f"Please provide a value for [b][i]{field}[/i][/b]",
+                f"Please provide a value for [b][i]{field.replace("_", " ").title()}[/i][/b]",
                 title=self.config.display_name,
                 severity="warning"
             )
@@ -137,8 +137,8 @@ class Process:
             logging.info(f"Running command: {command}")
 
             # Ensure results directory exists
-            results_dir = Path("results")
-            results_dir.mkdir(exist_ok=True)
+            # results_dir = Path("results")
+            # results_dir.mkdir(exist_ok=True)
 
             # Get executable and arguments
             cmd_parts = command.split()
@@ -171,7 +171,7 @@ class Process:
 
         # Should it be`as e` ?? I don't know
         except FileNotFoundError:
-            error_msg = f"Command not found: {command.split()[0]}"
+            error_msg = f"Command not found: {executable}"
             logging.error(error_msg)
             self.app.notify(
                 error_msg,
@@ -193,4 +193,3 @@ class Process:
 
         finally:
             self.app.query_one(f"#{self.config.display_name}_loading").remove_class("running")
-

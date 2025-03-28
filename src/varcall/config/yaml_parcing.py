@@ -1,9 +1,11 @@
 from pathlib import Path
-import yaml
+import ryaml
 from varcall.process.process_class import ProcessConfig
 from varcall.config.process_dict import DEFAULT_MASTER_CONFIG
 import os
 import logging
+
+logger = logging.getLogger("yaml_parcing")
 
 def compile_master_config(yaml_file: Path | None = None) -> dict[str, dict[str, ProcessConfig]]:
     """
@@ -24,8 +26,6 @@ def compile_master_config(yaml_file: Path | None = None) -> dict[str, dict[str, 
     Returns:
         dict[str, dict[str, ProcessConfig]]: The compiled master configuration.
     """
-    # Set up logging
-    logger = logging.getLogger(__name__)
 
     # Define potential config file locations in order of preference
     if yaml_file is None:
@@ -40,31 +40,30 @@ def compile_master_config(yaml_file: Path | None = None) -> dict[str, dict[str, 
         for path in possible_paths:
             if path.exists():
                 yaml_file = path
-                logger.info(f"Using configuration file: {yaml_file}")
+                logging.info(f"Using configuration file: {yaml_file}")
                 break
 
         # If no config file found, use default or raise error
         if yaml_file is None:
-            logger.warning("No configuration file found. Using default configuration.")
+            logging.info("No configuration file found. Using default configuration.")
             return create_default_config()
 
     # Ensure the file exists
-    if not yaml_file.exists():
-        logger.error(f"Configuration file not found: {yaml_file}")
-        logger.info("Using default configuration.")
-        return create_default_config()
+    # if not yaml_file.exists():
+    #     logging.error(f"Configuration file not found: {yaml_file}")
+    #     logging.info("Using default configuration.")
+    #     return create_default_config()
 
     # Load YAML configuration file into a dictionary
     try:
-        with open(yaml_file, "r") as file:
-            config_yaml = yaml.safe_load(file)
+        config_yaml = ryaml.loads(yaml_file.__str__())
 
         if not config_yaml:
-            logger.warning(f"Empty or invalid configuration file: {yaml_file}")
+            logging.warning(f"Empty or invalid configuration file: {yaml_file}")
             return create_default_config()
 
-    except (yaml.YAMLError, IOError) as e:
-        logger.error(f"Error reading configuration file {yaml_file}: {e}")
+    except (ryaml.InvalidYamlError, IOError) as e:
+        logging.error(f"Error reading configuration file {yaml_file}: {e}")
         return create_default_config()
 
     master_config = {}
@@ -72,7 +71,7 @@ def compile_master_config(yaml_file: Path | None = None) -> dict[str, dict[str, 
     for tab_name, processes in config_yaml.items():
         tab_dict = {}
         if not isinstance(processes, dict):
-            logger.warning(f"Invalid format for tab '{tab_name}': expected dict but got {type(processes)}. Skipping.")
+            logging.warning(f"Invalid format for tab '{tab_name}': expected dict but got {type(processes)}. Skipping.")
             continue
 
         for process_name, process_config_dict in processes.items():
@@ -81,7 +80,7 @@ def compile_master_config(yaml_file: Path | None = None) -> dict[str, dict[str, 
                 process_config = ProcessConfig(**process_config_dict)
                 tab_dict[process_name] = process_config
             except Exception as e:
-                logger.error(f"Error creating ProcessConfig for '{process_name}' in tab '{tab_name}': {e}")
+                logging.error(f"Error creating ProcessConfig for '{process_name}' in tab '{tab_name}': {e}")
                 # Consider adding default ProcessConfig for this entry
 
         if tab_dict:  # Only add the tab if it has valid processes
@@ -89,7 +88,7 @@ def compile_master_config(yaml_file: Path | None = None) -> dict[str, dict[str, 
 
     # Ensure master_config is not empty
     if not master_config:
-        logger.warning("No valid configuration found. Using default configuration.")
+        logging.warning("No valid configuration found. Using default configuration.")
         return create_default_config()
 
     return master_config

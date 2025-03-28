@@ -1,8 +1,5 @@
 from varcall.process.process_class import ProcessConfig
 
-# dictionary to track running processes
-running_processes = {}
-
 # configure bioinformatics tools
 HOME_PROCESSES = {
     # data download tool

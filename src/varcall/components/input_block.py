@@ -1,3 +1,4 @@
+import logging
 from textual.app import ComposeResult
 from textual.containers import ScrollableContainer, Horizontal
 from textual.widgets import Button, Input, Label, LoadingIndicator, Static
@@ -119,7 +120,7 @@ class ProcessWidgets(Static):
                 classes="process-widget", id=f"{process_name}_widget"
             ):
                 # Title at top
-                yield Label(config.display_name, classes="process-title")
+                yield Label(str(config.display_name), classes="process-title")
 
                 # Input fields in middle
                 for field in config.input_fields:
@@ -152,3 +153,4 @@ class ProcessWidgets(Static):
                             id=f"view_{process_name}_results",
                             classes="view_results",
                         )
+            logging.info(f"ProcessWidget - '{config.name}' Mounted")

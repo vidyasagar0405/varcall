@@ -1,16 +1,19 @@
 from pathlib import Path
+import logging
 
 from textual.app import App, ComposeResult
 from textual.containers import ScrollableContainer
 from textual.widgets import ( Button, Footer, Header, MarkdownViewer,
-                              TabbedContent, TabPane,
-                            )
+                              TabbedContent, TabPane,)
+
+from textual.lazy import Lazy
 
 from varcall.components.input_block import ProcessWidgets
 from varcall.components.yes_or_no import YesOrNo
 from varcall.process.process_class import Process
 from varcall.config.yaml_parcing import MASTER_CONFIG
 from varcall.help import help_path
+from varcall.log_setup import setup_logging
 
 
 class Varcall(App[None]):
@@ -25,19 +28,32 @@ class Varcall(App[None]):
     CSS_PATH = "./app.css"
 
     def compose(self) -> ComposeResult:
+
         with ScrollableContainer(id="ScrollableContainer"):
             yield Header()
             with TabbedContent():
+
+                tab_number = 1
                 for tab, processes_dict in MASTER_CONFIG.items():
                     tab = tab.title()
+
                     with TabPane(tab, id=f"{tab}Tab"):
-                        yield ProcessWidgets(processes_dict)
+                        logging.info(f"Tab - '{tab}' mounted ")
+                        if tab_number == 1:
+                            yield ProcessWidgets(processes_dict)
+                        else:
+                            yield Lazy(ProcessWidgets(processes_dict))
+                        tab_number += 1
+
                 with TabPane("Help", id="HelpTab"):
+                    logging.info("Tab - 'Help' mounted ")
                     yield MarkdownViewer(Path(help_path).read_text())
+
             yield Footer(show_command_palette=True)
 
     def on_button_pressed(self, event: Button.Pressed) -> None:
         button_id = event.button.id
+        logging.info(f"Button Pressed {button_id}")
         if button_id and button_id.endswith("_button"):
             process_name = button_id.replace("_button", "")
             for tab in MASTER_CONFIG.values():
@@ -63,6 +79,7 @@ class Varcall(App[None]):
         self.query_one(TabbedContent).active = "HelpTab"
 
     def action_print_theme_data(self):
+        logging.info("Printing theme data")
         with open("themes.txt", "a") as f:
             f.write(f"\n\n{self.app.theme}\n\n")
             for key, value in self.app.theme_variables.items():
@@ -71,7 +88,10 @@ class Varcall(App[None]):
 
 # Main entry point of the application
 def main():
+    setup_logging()
+    logging.info("Starting app ...")
     Varcall().run()
+    logging.info("Closing app ...")
 
 
 if __name__ == "__main__":
